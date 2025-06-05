@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import type { ArticuloShortDTO } from "../../types/domain/articulo/ArticuloShortDTO";
 import { DataGrid } from "@mui/x-data-grid";
 
-export const ReadArticles = () => {
+export const ArticuloListado = () => {
   const { isLoading, error, getArticulosShort } = useArticulo("/articulo");
   const [articulos, setArticulos] = useState<ArticuloShortDTO[]>([]);
 
