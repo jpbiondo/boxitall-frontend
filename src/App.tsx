@@ -16,6 +16,7 @@ import { ProveedorAltaModificacion } from "./pages/proveedor/ProveedorAltaModifi
 function App() {
   return (
     <>
+      {/* TODO: Rename all snake_case codes to camelCase */}
       <h1> Welcome to BoxItAll Frontend!</h1>
       <p>Best stock retailer ever!</p>
       <Routes>
@@ -25,16 +26,16 @@ function App() {
           <Route index element={<ArticuloListado />} />
 
           <Route
-            path="/create"
-            element={<ArticuloAltaModificacion updateMode={true} />}
-          />
-
-          <Route
-            path="/update/:articulo_cod"
+            path="create"
             element={<ArticuloAltaModificacion updateMode={false} />}
           />
 
-          <Route path=":articulo_cod" element={<ArticuloConsulta />} />
+          <Route
+            path="update/:articuloCod"
+            element={<ArticuloAltaModificacion updateMode={true} />}
+          />
+
+          <Route path=":articuloCod" element={<ArticuloConsulta />} />
         </Route>
 
         <Route path="orden-compra">
@@ -43,13 +44,13 @@ function App() {
           <Route path=":ordenCompraCod" element={<OrdenCompraConsulta />} />
 
           <Route
-            path="/create"
-            element={<OrdenCompraAltaModificacion updateMode={true} />}
+            path="create"
+            element={<OrdenCompraAltaModificacion updateMode={false} />}
           />
 
           <Route
-            path="/update/:ordenCompraCod"
-            element={<OrdenCompraAltaModificacion updateMode={false} />}
+            path="update/:ordenCompraCod"
+            element={<OrdenCompraAltaModificacion updateMode={true} />}
           />
         </Route>
 
@@ -63,7 +64,7 @@ function App() {
             element={<VentaAltaModificacion updateMode={false} />}
           />
           <Route
-            path="/update/:ventaCod"
+            path="update/:ventaCod"
             element={<VentaAltaModificacion updateMode={true} />}
           />
         </Route>
@@ -78,7 +79,7 @@ function App() {
             element={<ProveedorAltaModificacion updateMode={false} />}
           />
           <Route
-            path="/update/:proveedorCod"
+            path="update/:proveedorCod"
             element={<ProveedorAltaModificacion updateMode={true} />}
           />
         </Route>
