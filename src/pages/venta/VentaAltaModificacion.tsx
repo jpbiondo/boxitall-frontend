@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { Venta } from "../../types/domain/venta/Venta";
 
@@ -17,12 +17,34 @@ export function VentaAltaModificacion({
 
   return (
     <div>
-      <h1>{updateMode ? "Actualizar" : "Crear"} Artículo</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField {...register("ventaCod")} />
-        <TextField {...register("ventaFecha")} />
-        <TextField {...register("ventaTotal")} />
-        <TextField {...register("ventaDetalles")} />
+      <h1>{updateMode ? "Actualizar" : "Crear"} Venta</h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+      >
+        <TextField
+          {...register("ventaCod")}
+          id="ventaCod"
+          label="Código de venta"
+        />
+        <TextField
+          {...register("ventaFecha")}
+          id="ventaFecha"
+          label="Fecha de venta"
+        />
+        <TextField
+          {...register("ventaTotal")}
+          id="ventaTotal"
+          label="Total de venta"
+        />
+        <TextField
+          {...register("ventaDetalles")}
+          id="ventaDetalles"
+          label="Detalles de venta"
+        />
+        <Button type="submit" variant="contained">
+          Guardar
+        </Button>
       </form>
     </div>
   );

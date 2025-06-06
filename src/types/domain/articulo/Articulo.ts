@@ -3,6 +3,7 @@ import type { Proveedor } from "../proveedor/Proveedor";
 export interface Articulo {
   articuloCod: number;
   articuloNombre: string;
+  articuloDescripcion: string;
   articuloCostoAlmacenamiento: number;
   articuloDemanda: number;
   articuloDesviacionEstandar: number;

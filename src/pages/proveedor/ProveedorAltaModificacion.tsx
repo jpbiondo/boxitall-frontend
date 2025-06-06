@@ -1,4 +1,7 @@
-import { TextField } from "@mui/material";
+// TODO: Añadir validaciones
+// TODO: Conectar al backend
+// TODO: Añadir artículos
+import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
 
@@ -17,11 +20,30 @@ export function ProveedorAltaModificacion({
 
   return (
     <div>
-      <h1>{updateMode ? "Actualizar" : "Crear"} Artículo</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField {...register("proveedorCod")} />
-        <TextField {...register("proveedorNombre")} />
-        <TextField {...register("proveedorTelefono")} />
+      <h1>{updateMode ? "Actualizar" : "Crear"} Proveedor</h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+      >
+        <TextField
+          {...register("proveedorCod")}
+          id="proveedorCod"
+          label="Código de proveedor"
+        />
+        <TextField
+          {...register("proveedorNombre")}
+          id="proveedorNombre"
+          label="Nombre del proveedor"
+        />
+        <TextField
+          {...register("proveedorTelefono")}
+          id="proveedorTelefono"
+          label="Teléfono del proveedor"
+        />
+
+        <Button type="submit" variant="contained">
+          Guardar
+        </Button>
       </form>
     </div>
   );
