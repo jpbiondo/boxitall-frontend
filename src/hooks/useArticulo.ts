@@ -3,7 +3,8 @@ import { useHttp } from "./useHttp";
 import type { ArticuloShortDTO } from "../types/domain/articulo/ArticuloShortDTO";
 import type { Articulo } from "../types/domain/articulo/Articulo";
 
-export function useArticulo(endpoint: string) {
+export function useArticulo() {
+  const endpoint = "/articulo";
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getArticulosShort = useCallback(async () => {
