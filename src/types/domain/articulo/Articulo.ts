@@ -7,7 +7,6 @@ export interface Articulo {
   articuloCostoAlmacenamiento: number;
   articuloDemanda: number;
   articuloDesviacionEstandar: number;
-  articuloFechaBaja: Date | null;
   articuloNivelServicio: number;
   articuloStock: number;
 
@@ -22,9 +21,7 @@ export interface ArticuloProveedor {
   APCostoCompra: number; // Costo unitario articulo
   APCostoPedido: number; // Cargo administrativo
   APDemoraEntregaDias: number;
-  APFechaBaja: Date | null;
-  APPrecioUnitario: number;
-  APPuntoPedido: number;
+  proveedor: Proveedor;
 }
 
 export interface ArticuloModeloLoteFijo {

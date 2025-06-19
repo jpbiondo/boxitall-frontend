@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid } from "@mui/x-data-grid";
+
 import type { ArticuloShortDTO } from "../../types/domain/articulo/ArticuloShortDTO";
+import { Button, IconButton } from "@mui/material";
+import { Visibility } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export const ArticuloListado = () => {
-  const { isLoading, error, getArticulosShort } = useArticulo("/articulo");
+  const { isLoading, error, getArticulosShort } = useArticulo();
   const [articulos, setArticulos] = useState<any[]>([]);
+  const navigate = useNavigate();
+
+  const handleGetArticulo = (articuloCod: number) => {
+    navigate(`/articulo/${articuloCod}`);
+  };
 
   useEffect(() => {
     getArticulosShort().then( (articulos) => {
@@ -68,8 +77,24 @@ export const ArticuloListado = () => {
     { field: "proveedorPredeterminadoNombre", headerName: "ProvPredNombre", width: 100 },
 
     { field: "modeloInventario", headerName: "Modelo", width: 100 },
+    
     { field: "fechaProximoPedido", headerName: "Próximo pedido", width: 100 },
     { field: "restanteProximoPedido", headerName: "Unidades hasta próximo pedido", width: 100 },
+
+    {
+      field: "actions",
+      headerName: "Acciones",
+      width: 100,
+      renderCell: (params: any) => (
+        <IconButton
+          color="primary"
+          onClick={() => handleGetArticulo(params.row.articuloCod)}
+        >
+          <Visibility />
+        </IconButton>
+      ),
+    },
+
   ];
 
   return (

@@ -5,7 +5,8 @@ import type { Articulo } from "../types/domain/articulo/Articulo";
 import type { ArticuloList } from "../types/domain/articulo/ArticuloList";
 import { API_URL } from "../utils/constants";
 
-export function useArticulo(endpoint: string) {
+export function useArticulo() {
+  const endpoint = "/articulo";
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getArticulosShort = useCallback(async () => {
