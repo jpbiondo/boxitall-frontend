@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid } from "@mui/x-data-grid";
+
+import type { ArticuloShortDTO } from "../../types/domain/articulo/ArticuloShortDTO";
 import { Button, IconButton } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +17,19 @@ export const ArticuloListado = () => {
   };
 
   useEffect(() => {
-    // getArticulosShort().then(setArticulos);
+    getArticulosShort().then( (articulos) => {
+      articulos.map((articulo)=>{
+      articulo.modeloInventario == "LoteFijo"?articulo.fechaProximoPedido = "-":articulo.restanteProximoPedido="-"
+      articulo.cgi == "0"?articulo.cgi = "-":{}
+      articulo.proveedorPredeterminadoId == "0"?articulo.proveedorPredeterminadoId = "-":{}
+      articulo.proveedorPredeterminadoNombre == "Sin proveedor predeterminado"?articulo.proveedorPredeterminadoNombre = "-":{}
+    });
+    setArticulos(articulos)
+  }
+  );
+
     // MOC DATA
-    setArticulos([
+    /*setArticulos([
       {
         id: 1,
         articuloCod: 1,
@@ -45,7 +57,7 @@ export const ArticuloListado = () => {
         proveedorPred: "Pelotudo",
         modeloInventario: "Mierda",
       },
-    ]);
+    ]);*/
   }, [getArticulosShort]);
 
   // Dev time debugging
@@ -57,12 +69,18 @@ export const ArticuloListado = () => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "articuloCod", headerName: "Código", width: 100 },
-    { field: "articuloNombre", headerName: "Nombre", width: 200 },
+    { field: "nombre", headerName: "Nombre", width: 200 },
     { field: "stock", headerName: "Stock", width: 100 },
-    { field: "articuloCostoPrecio", headerName: "Costo", width: 100 },
-    { field: "proveedorPred", headerName: "Proveedor", width: 100 },
+    { field: "cgi", headerName: "CGI", width: 100 },
+
+    { field: "proveedorPredeterminadoId", headerName: "ProvPredId", width: 100 },
+    { field: "proveedorPredeterminadoNombre", headerName: "ProvPredNombre", width: 100 },
+
     { field: "modeloInventario", headerName: "Modelo", width: 100 },
+    
+    { field: "fechaProximoPedido", headerName: "Próximo pedido", width: 100 },
+    { field: "restanteProximoPedido", headerName: "Unidades hasta próximo pedido", width: 100 },
+
     {
       field: "actions",
       headerName: "Acciones",
@@ -76,6 +94,7 @@ export const ArticuloListado = () => {
         </IconButton>
       ),
     },
+
   ];
 
   return (
