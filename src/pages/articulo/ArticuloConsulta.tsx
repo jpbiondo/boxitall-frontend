@@ -26,17 +26,30 @@ export function ArticuloConsulta() {
   );
 
   const renderModeloInfo = () =>{
+    const common = <p>Stock de seguridad: {modInv.stockSeguridad}</p>
     if( modInv.nombre == "Lote Fijo"){
-      return `Stock restante hasta próximo pedido: ${articulo.restanteProximoPedido}`;
+      const asMLF = modInv as ArticuloModeloLoteFijo;
+      return <>
+        {common}
+        <p>Stock restante hasta próximo pedido: {articulo.restanteProximoPedido}</p>
+        <p>Lote óptimo: {asMLF.loteOptimo}</p>
+        <p>Punto de pedio: {asMLF.puntoPedido}</p>
+      </>;
     }
     else{
-      const date:Date = new Date((modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido);
-      return `Fecha próximo pedido: ${date.toUTCString()}`;
+      const asMIF = modInv as ArticuloModeloIntervaloFijo;
+      const date:Date = new Date(asMIF.fechaProximoPedido);
+      return <>
+        {common}
+        <p>Fecha próximo pedido: {date.toUTCString()}</p>
+        <p>Intervalo de pedido: {asMIF.intervaloPedido}</p>
+        <p>Inventario máximo: {asMIF.inventarioMax}</p>
+      </>;
     }
   }
   const renderProveedorInfo = () =>{
     if(articulo.proveedorPredeterminadoId){
-      return `Id: ${articulo.proveedorPredeterminadoId} - ${articulo.proveedorPredeterminadoNombre}`
+      return `Id ${articulo.proveedorPredeterminadoId} - ${articulo.proveedorPredeterminadoNombre}`
     }
     else{
       return `${articulo.proveedorPredeterminadoNombre}`
@@ -79,9 +92,9 @@ export function ArticuloConsulta() {
             <p>
               Modelo Inventario: <span> { modInv.nombre } </span>
             </p>
-            <p> 
+            <div> 
               { renderModeloInfo() }
-            </p>
+            </div>
           </div>
 
           <p>

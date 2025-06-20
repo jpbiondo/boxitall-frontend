@@ -18,8 +18,12 @@ export const ArticuloListado = () => {
 
   useEffect(() => {
     getArticulosShort().then( (articulos) => {
+      articulos.forEach((articulo) => {
+        const date:Date = new Date(articulo.fechaProximoPedido);
+        articulo.fechaProximoPedido = date.toUTCString();
+      })
       articulos.map((articulo)=>{
-      articulo.modeloInventario == "LoteFijo"?articulo.fechaProximoPedido = "-":articulo.restanteProximoPedido="-"
+      articulo.modeloInventario == "Lote Fijo"?articulo.fechaProximoPedido = "-":articulo.restanteProximoPedido="-"
       articulo.cgi == "0"?articulo.cgi = "-":{}
       articulo.proveedorPredeterminadoId == "0"?articulo.proveedorPredeterminadoId = "-":{}
       articulo.proveedorPredeterminadoNombre == "Sin proveedor predeterminado"?articulo.proveedorPredeterminadoNombre = "-":{}
