@@ -14,17 +14,18 @@ export interface Articulo {
   proveedorPredeterminadoNombre: string | null;
 
 
-  proveedores: ArticuloProveedor[];
+  articuloProveedores: ArticuloProveedor[];
 
   modeloInventario: ArticuloModeloInventario;
   restanteProximoPedido: number;
 }
 
 export interface ArticuloProveedor {
-  APCargoPedido: number; // Costo envío producto
-  APCostoCompra: number; // Costo unitario articulo
-  APCostoPedido: number; // Cargo administrativo
-  APDemoraEntregaDias: number;
+  cargoPedido: number; // Costo envío producto
+  costoCompra: number; // Costo unitario articulo
+  costoPedido: number; // Cargo administrativo
+  demoraEntrega: number;
+  precioUnitario: number;
   proveedor: Proveedor;
 }
 

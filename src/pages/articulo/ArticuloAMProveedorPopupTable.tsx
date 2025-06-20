@@ -19,17 +19,18 @@ interface ArticuloAMProveedorPopupTableProps {
 }
 
 function createProveedorRow(
+  proveedorId: number,
   proveedorCod: number,
   proveedorNombre: string,
   proveedorTelefono: string
 ) {
-  return { proveedorCod, proveedorNombre, proveedorTelefono };
+  return { proveedorId, proveedorCod, proveedorNombre, proveedorTelefono };
 }
 
 const proveedoresMock = [
-  createProveedorRow(1, "Proveedor 1", "1234567890"),
-  createProveedorRow(2, "Proveedor 2", "1234567890"),
-  createProveedorRow(3, "Proveedor 3", "1234567890"),
+  createProveedorRow(1, 1, "Proveedor 1", "1234567890"),
+  createProveedorRow(2, 2, "Proveedor 2", "1234567890"),
+  createProveedorRow(3, 3, "Proveedor 3", "1234567890"),
 ];
 
 export default function ArticuloAMProveedorPopupTable({
