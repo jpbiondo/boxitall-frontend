@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid } from "@mui/x-data-grid";
 
-import type { ArticuloShortDTO } from "../../types/domain/articulo/ArticuloShortDTO";
 import { Button, IconButton } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
 export const ArticuloListado = () => {
   const { isLoading, error, getArticulosShort } = useArticulo();
-  const [articulos, setArticulos] = useState<any[]>([]);
+  const [articulos, setArticulos] = useState<ArticuloList[]>([]);
   const navigate = useNavigate();
 
   const handleGetArticulo = (articuloCod: number) => {
-    navigate(`/articulo/${articuloCod}`);
+    navigate(`${articuloCod}`);
   };
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export const ArticuloListado = () => {
       renderCell: (params: any) => (
         <IconButton
           color="primary"
-          onClick={() => handleGetArticulo(params.row.articuloCod)}
+          onClick={() => handleGetArticulo(params.row.id)}
         >
           <Visibility />
         </IconButton>

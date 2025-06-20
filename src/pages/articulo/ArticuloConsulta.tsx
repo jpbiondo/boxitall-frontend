@@ -2,54 +2,104 @@
 // TODO: Enlazar eliminar con metodo eliminar
 import { Button } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
+import { useArticulo } from "../../hooks/useArticulo";
+import { useEffect, useState } from "react";
+import type { Articulo, ArticuloModeloIntervaloFijo, ArticuloModeloInventario, ArticuloModeloLoteFijo } from "../../types/domain/articulo/Articulo";
 
 export function ArticuloConsulta() {
   const { articuloCod } = useParams();
+  const { isLoading, getArticuloById} = useArticulo();
+  const [articulo, setArticulo] = useState<Articulo>(new Object() as Articulo);
+  const [modInv, setModInv] = useState<ArticuloModeloInventario>(new Object() as ArticuloModeloInventario);
 
   const handleDelete = () => {
     console.log("Eliminar artículo", articuloCod);
   };
 
+  useEffect(() => {
+    getArticuloById(articuloCod!).then((articulo) => {
+      setArticulo(articulo);
+      console.log(articulo);
+      articulo?.modeloInventario?setModInv(articulo.modeloInventario):{}
+    });
+    }, [getArticuloById]
+  );
+
+  const renderModeloInfo = () =>{
+    if( modInv.nombre == "Lote Fijo"){
+      return `Stock restante hasta próximo pedido: ${articulo.restanteProximoPedido}`;
+    }
+    else{
+      const date:Date = new Date((modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido);
+      return `Fecha próximo pedido: ${date.toUTCString()}`;
+    }
+  }
+  const renderProveedorInfo = () =>{
+    if(articulo.proveedorPredeterminadoId){
+      return `Id: ${articulo.proveedorPredeterminadoId} - ${articulo.proveedorPredeterminadoNombre}`
+    }
+    else{
+      return `${articulo.proveedorPredeterminadoNombre}`
+    }
+  }
+
   return (
     <div>
-      <h1>Articulo Nombre {articuloCod}</h1>
-      <div>
-        <Link to={`/articulo/update/${articuloCod}`}>
-          <Button variant="contained" color="primary">
-            Modificar
-          </Button>
-        </Link>
-        <Button variant="contained" color="error" onClick={handleDelete}>
-          Eliminar
-        </Button>
-      </div>
+      { !isLoading &&
+        <>
+          <h1>{articuloCod} - {articulo.nombre}</h1>
+          <div>
+            <Link to={`/articulo/update/${articuloCod}`}>
+              <Button variant="contained" color="primary">
+                Modificar
+              </Button>
+            </Link>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              Eliminar
+            </Button>
+          </div>
 
-      <p>
-        Descripción: <span>Descripción del artículo</span>
-      </p>
+          <p>
+            Stock: <span>{articulo.stock}</span>
+          </p>
 
-      <p>
-        Nivel de servicio: <span>Nivel de servicio del artículo</span>
-      </p>
+          <p>
+            Descripción: <span>{articulo.descripcion}</span>
+          </p>
 
-      <p>
-        Modelo Inventario: <span>Modelo de inventario del artículo</span>
-        <p>Fecha pedido / Restante PP</p>
-      </p>
+          <p>
+            Costo de costo de almacenamiento anual: $<span>{articulo.costoAlmacenamiento}</span>
+          </p>
 
-      <p>
-        Proveedor predeterminado:{" "}
-        <span>Proveedor predeterminado del artículo</span>
-      </p>
+          <p>
+            Nivel de servicio: <span> {articulo.nivelServicio}</span>
+          </p>
 
-      <p>
-        Proveedores:
-        <ul>
-          <li>Proveedor 1</li>
-          <li>Proveedor 2</li>
-          <li>Proveedor 3</li>
-        </ul>
-      </p>
+          <div>
+            <p>
+              Modelo Inventario: <span> { modInv.nombre } </span>
+            </p>
+            <p> 
+              { renderModeloInfo() }
+            </p>
+          </div>
+
+          <p>
+            Proveedor predeterminado: {renderProveedorInfo()}
+          </p>
+
+          <div>
+            <p>
+              Proveedores:
+            </p>
+            <ul>
+              <li>Proveedor 1</li>
+              <li>Proveedor 2</li>
+              <li>Proveedor 3</li>
+            </ul>
+          </div>
+        </>
+      }
     </div>
   );
 }
