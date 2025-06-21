@@ -20,14 +20,14 @@ export function ProveedorConsulta() {
       <p>
         Teléfono: <span>Teléfono del proveedor</span>
       </p>
-      <p>
-        Artículos:
+      <div>
+        <p>Artículos:</p>
         <ul>
           <li>Artículo 1</li>
           <li>Artículo 2</li>
           <li>Artículo 3</li>
         </ul>
-      </p>
+      </div>
     </div>
   );
 }

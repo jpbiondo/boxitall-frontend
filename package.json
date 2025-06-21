@@ -33,5 +33,9 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
-  }
+  },
+  "description": "El frontier del boxitall hecho en [React](https://react.dev/) y usando [Material UI](https://mui.com/material-ui/getting-started/).\r ## Corriendo el proyecto\r 1. Clonar el repositorio.\r ```sh\r git clone https://github.com/jpbiondo/boxitall-frontend.git\r cd boxitall-frontend\r ```\r 2. Contruir el proyecto. Para armar el proyecto, instalar las dependencias requeridas:\r ```sh\r npm i\r ```\r 3. Disfrutar la comida",
+  "main": "eslint.config.js",
+  "author": "",
+  "license": "ISC"
 }

@@ -6,7 +6,7 @@ export function ProveedorListado() {
   const { isLoading, error, getProveedorShort } = useProveedor("/proveedor");
   const [proveedores, setProveedores] = useState<any[]>([]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     setProveedores([
       {
         id: 1,
@@ -27,7 +27,19 @@ export function ProveedorListado() {
         proveedorTelefono: "123456789",
       },
     ]);
-  }, []);
+  }, []);*/
+
+useEffect(() => {
+  getProveedorShort().then((proveedores) => {
+    setProveedores(proveedores);
+  })
+}, [getProveedorShort]);
+
+useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 100 },

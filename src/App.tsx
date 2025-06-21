@@ -77,7 +77,7 @@ function App() {
                   <Route index element={<OrdenCompraListado />} />
 
                   <Route
-                    path=":ordenCompraCod"
+                    path=":ordenCompraCod/detalle"
                     element={<OrdenCompraConsulta />}
                   />
 

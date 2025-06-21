@@ -2,12 +2,15 @@ import { useCallback } from "react";
 import { useHttp } from "./useHttp";
 import type { ProveedorShortDTO } from "../types/domain/proveedor/ProveedorShortDTO";
 import type { Proveedor } from "../types/domain/proveedor/Proveedor";
+import { API_URL } from "../utils/constants";
+import type { ProveedorList } from "../types/domain/proveedor/ProveedorList";
 
-export function useProveedor(endpoint: string) {
+export function useProveedor() {
+  const endpoint =`${API_URL}/proveedor`
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getProveedorShort = useCallback(async () => {
-    const response: ProveedorShortDTO[] = await get(`${endpoint}/short`);
+    const response:  ProveedorList[] = await get(`${endpoint}/listAll`);
     return response;
   }, [get, endpoint]);
 

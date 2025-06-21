@@ -4,6 +4,7 @@
 import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
+import { useProveedor } from "../../hooks/useProveedor";
 
 interface IFormInput extends Proveedor {}
 
@@ -15,8 +16,11 @@ export function ProveedorAltaModificacion({
   updateMode,
 }: ProveedorAltaModificacionProps) {
   const { register, handleSubmit } = useForm<IFormInput>();
+  const { createProveedor } = useProveedor();
 
-  const onSubmit = (data: IFormInput) => console.log(data);
+  const onSubmit = (data: IFormInput) => {
+    createProveedor(data);
+  }
 
   return (
     <div>

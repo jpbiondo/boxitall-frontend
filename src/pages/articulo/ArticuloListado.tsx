@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
-import type { ArticuloShortDTO } from "../../types/domain/articulo/ArticuloShortDTO";
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, Edit, Visibility, WidthFull } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
 export const ArticuloListado = () => {
   const { isLoading, error, getArticulosShort } = useArticulo();
-  const [articulos, setArticulos] = useState<any[]>([]);
+  const [articulos, setArticulos] = useState<ArticuloList[]>([]);
   const navigate = useNavigate();
 
   const handleGetArticulo = (articuloCod: number) => {
@@ -26,8 +26,12 @@ export const ArticuloListado = () => {
 
   useEffect(() => {
     getArticulosShort().then((articulos) => {
+      articulos.forEach((articulo) => {
+        const date: Date = new Date(articulo.fechaProximoPedido);
+        articulo.fechaProximoPedido = date.toUTCString();
+      });
       // articulos.map((articulo) => {
-      //   articulo.modeloInventario == "LoteFijo"
+      //   articulo.modeloInventario == "Lote Fijo"
       //     ? (articulo.fechaProximoPedido = "-")
       //     : (articulo.restanteProximoPedido = "-");
       //   articulo.cgi == "0" ? (articulo.cgi = "-") : {};
