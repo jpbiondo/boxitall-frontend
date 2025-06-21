@@ -12,7 +12,7 @@ import ArticuloAMProveedorPopupTable from "../pages/articulo/ArticuloAMProveedor
 import { Add, Delete } from "@mui/icons-material";
 
 interface IFormValues extends Articulo {
-  modeloInventarioTipo: "loteFijo" | "intervaloFijo";
+  modeloInventarioTipo: "Lote Fijo" | "Intervalo Fijo";
 }
 
 interface ArticuloFormProps {
@@ -30,16 +30,18 @@ export default function ArticuloForm({
   const { register, control, watch, handleSubmit } = useForm<IFormValues>({
     defaultValues: articulo
       ? {
-          articuloCod: articulo.articuloCod,
-          articuloNombre: articulo.articuloNombre,
-          articuloDescripcion: articulo.articuloDescripcion,
-          articuloDemanda: articulo.articuloDemanda,
-          articuloDesviacionEstandar: articulo.articuloDesviacionEstandar,
-          articuloNivelServicio: articulo.articuloNivelServicio,
-          articuloStock: articulo.articuloStock,
+          id: articulo.id,
+          nombre: articulo.nombre,
+          descripcion: articulo.descripcion,
+          demanda: articulo.demanda,
+          desviacionEstandar: articulo.desviacionEstandar,
+          nivelServicio: articulo.nivelServicio,
+          stock: articulo.stock,
+          costoAlmacenamiento: articulo.costoAlmacenamiento,
 
-          proveedores: articulo.proveedores,
-          proveedorPred: articulo.proveedorPred,
+          articuloProveedores: articulo.articuloProveedores,
+          proveedorPredeterminadoId: articulo.proveedorPredeterminadoId,
+          proveedorPredeterminadoNombre: articulo.proveedorPredeterminadoNombre,
 
           modeloInventario: articulo.modeloInventario,
         }
@@ -47,16 +49,17 @@ export default function ArticuloForm({
   });
 
   const { fields, append, remove } = useFieldArray({
-    name: "proveedores",
+    name: "articuloProveedores",
     control,
   });
 
   const onAddArtProveedor = (proveedor: Proveedor) => {
     append({
-      APCargoPedido: 0,
-      APCostoCompra: 0,
-      APCostoPedido: 0,
-      APDemoraEntregaDias: 0,
+      cargoPedido: 0,
+      costoCompra: 0,
+      costoPedido: 0,
+      demoraEntrega: 0,
+      precioUnitario: 0,
       proveedor: proveedor,
     });
   };
@@ -64,8 +67,8 @@ export default function ArticuloForm({
   useEffect(() => {
     if (!articulo) return;
 
-    articulo.proveedores.map((proveedor) => {
-      append(proveedor);
+    articulo.articuloProveedores.map((artProv) => {
+      append(artProv);
     });
   }, [articulo]);
 
@@ -77,7 +80,7 @@ export default function ArticuloForm({
       return;
     }
 
-    updateArticulo(String(articulo.articuloCod), data);
+    updateArticulo(String(articulo.id), data);
   }
 
   //   Handling ArticuloProveedor state
@@ -105,41 +108,41 @@ export default function ArticuloForm({
       }}
     >
       {/* Base Articulo Fields */}
-      <TextField {...register("articuloNombre")} label="Nombre del artículo" />
+      <TextField {...register("nombre")} label="Nombre del artículo"/>
 
       <TextField
         multiline
         rows={3}
-        {...register("articuloDescripcion")}
+        {...register("descripcion")}
         label="Descripción del artículo"
       />
 
       <TextField
-        {...register("articuloCostoAlmacenamiento")}
+        {...register("costoAlmacenamiento")}
         label="Costo almacenamiento artículo"
         type="number"
       />
 
       <TextField
-        {...register("articuloDemanda")}
+        {...register("demanda")}
         label="Cantidad demandada del artículo"
         type="number"
       />
 
       <TextField
-        {...register("articuloDesviacionEstandar")}
+        {...register("desviacionEstandar")}
         label="Desviación estandar demanda artículo"
         type="number"
       />
 
       <TextField
-        {...register("articuloNivelServicio")}
+        {...register("nivelServicio")}
         label="Nivel de servicio del artículo"
         type="number"
       />
 
       <TextField
-        {...register("articuloStock")}
+        {...register("stock")}
         label="Stock del artículo"
         type="number"
       />
@@ -182,22 +185,22 @@ export default function ArticuloForm({
               <TextField
                 label="Cargo Pedido"
                 type="number"
-                {...register(`proveedores.${index}.APCargoPedido`)}
+                {...register(`articuloProveedores.${index}.cargoPedido`)}
               />
               <TextField
                 label="Costo Compra"
                 type="number"
-                {...register(`proveedores.${index}.APCostoCompra`)}
+                {...register(`articuloProveedores.${index}.costoCompra`)}
               />
               <TextField
                 label="Costo Pedido"
                 type="number"
-                {...register(`proveedores.${index}.APCostoPedido`)}
+                {...register(`articuloProveedores.${index}.costoPedido`)}
               />
               <TextField
                 label="Demora entrega (días)"
                 type="number"
-                {...register(`proveedores.${index}.APDemoraEntregaDias`)}
+                {...register(`articuloProveedores.${index}.demoraEntrega`)}
               />
             </div>
           </div>
@@ -208,7 +211,7 @@ export default function ArticuloForm({
       <h2>Modelo de inventario</h2>
       <Controller
         control={control}
-        defaultValue="loteFijo"
+        defaultValue="Lote Fijo"
         render={({ field: { onChange, value } }) => (
           <Select
             labelId="modeloInventarioLabel"
@@ -217,8 +220,8 @@ export default function ArticuloForm({
             value={value}
             onChange={onChange}
           >
-            <MenuItem value="loteFijo">Modelo Lote Fijo</MenuItem>
-            <MenuItem value="intervaloFijo">Modelo Intervalo Fijo</MenuItem>
+            <MenuItem value="Lote Fijo">Modelo Lote Fijo</MenuItem>
+            <MenuItem value="Intervalo Fijo">Modelo Intervalo Fijo</MenuItem>
           </Select>
         )}
         name="modeloInventarioTipo"
@@ -226,7 +229,7 @@ export default function ArticuloForm({
 
       <div style={{ display: "flex", gap: "1rem", flexDirection: "column" }}>
         {/* Articulo Modelo Inventario LF */}
-        {modeloInventarioTipo === "loteFijo" && (
+        {modeloInventarioTipo === "Lote Fijo" && (
           <>
             <TextField
               label="Lote óptimo"
@@ -247,7 +250,7 @@ export default function ArticuloForm({
         )}
 
         {/* Articulo Modelo Inventario IF */}
-        {modeloInventarioTipo === "intervaloFijo" && (
+        {modeloInventarioTipo === "Intervalo Fijo" && (
           <>
             <TextField
               label="Fecha próximo pedido"
@@ -263,7 +266,7 @@ export default function ArticuloForm({
             <TextField
               label="Intervalo máximo"
               type="number"
-              {...register("modeloInventario.intervaloMax")}
+              {...register("modeloInventario.inventarioMax")}
             />
             <TextField
               label="Stock de seguridad"

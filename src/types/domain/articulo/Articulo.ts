@@ -1,38 +1,46 @@
 import type { Proveedor } from "../proveedor/Proveedor";
 
 export interface Articulo {
-  articuloCod: number;
-  articuloNombre: string;
-  articuloDescripcion: string;
-  articuloCostoAlmacenamiento: number;
-  articuloDemanda: number;
-  articuloDesviacionEstandar: number;
-  articuloNivelServicio: number;
-  articuloStock: number;
+  id: number;
+  nombre: string;
+  descripcion: string;
+  costoAlmacenamiento: number;
+  demanda: number;
+  desviacionEstandar: number;
+  nivelServicio: number;
+  stock: number;
 
-  proveedorPred: Proveedor | null;
-  proveedores: ArticuloProveedor[];
+  proveedorPredeterminadoId: number | null;
+  proveedorPredeterminadoNombre: string | null;
+
+
+  articuloProveedores: ArticuloProveedor[];
 
   modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
+  restanteProximoPedido: number;
 }
 
 export interface ArticuloProveedor {
-  APCargoPedido: number; // Costo envío producto
-  APCostoCompra: number; // Costo unitario articulo
-  APCostoPedido: number; // Cargo administrativo
-  APDemoraEntregaDias: number;
+  cargoPedido: number; // Costo envío producto
+  costoCompra: number; // Costo unitario articulo
+  costoPedido: number; // Cargo administrativo
+  demoraEntrega: number;
+  precioUnitario: number;
   proveedor: Proveedor;
 }
 
-export interface ArticuloModeloLoteFijo {
-  loteOptimo: number;
-  puntoPedido: number;
+export interface ArticuloModeloInventario{
   stockSeguridad: number;
+  nombre: string;
 }
 
-export interface ArticuloModeloIntervaloFijo {
+export interface ArticuloModeloLoteFijo extends ArticuloModeloInventario {
+  loteOptimo: number;
+  puntoPedido: number;
+}
+
+export interface ArticuloModeloIntervaloFijo extends ArticuloModeloInventario {
   fechaProximoPedido: Date;
   intervaloPedido: number;
-  intervaloMax: number;
-  stockSeguridad: number;
+  inventarioMax: number;
 }

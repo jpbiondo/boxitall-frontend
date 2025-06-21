@@ -1,6 +1,6 @@
 export interface ArticuloList {
-  articuloId: number;
-  articuloNombre: string;
+  id: number;
+  nombre: string;
   stock: number;
 
   cgi: string;
