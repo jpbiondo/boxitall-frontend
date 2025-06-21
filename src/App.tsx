@@ -12,79 +12,122 @@ import { VentaAltaModificacion } from "./pages/venta/VentaAltaModificacion";
 import { ProveedorListado } from "./pages/proveedor/ProveedorListado";
 import { ProveedorConsulta } from "./pages/proveedor/ProveedorConsulta";
 import { ProveedorAltaModificacion } from "./pages/proveedor/ProveedorAltaModificacion";
+import AppTheme from "./theme/AppTheme";
+import { alpha, Box, CssBaseline, Stack } from "@mui/material";
+import AppNavbar from "./components/AppNavbar";
+import SideMenu from "./components/SideMenu";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <>
-      {/* TODO: Rename all snake_case codes to camelCase */}
-      <h1> Welcome to BoxItAll Frontend!</h1>
-      <p>Best stock retailer ever!</p>
-      <Routes>
-        <Route index element={<Home />} />
+    <AppTheme>
+      <CssBaseline enableColorScheme />
+      <Box sx={{ display: "flex" }}>
+        <SideMenu />
+        <AppNavbar />
 
-        <Route path="articulo">
-          <Route index element={<ArticuloListado />} />
+        <Box
+          component="main"
+          sx={(theme) => ({
+            flexGrow: 1,
+            backgroundColor: theme.vars
+              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+              : alpha(theme.palette.background.default, 1),
+            overflow: "auto",
+          })}
+        >
+          <Stack
+            spacing={4}
+            sx={{
+              alignItems: "center",
+              mx: 3,
+              pb: 5,
+              mt: { xs: 8, md: 0 },
+            }}
+            direction="column"
+          >
+            <Header />
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: { sm: "100%", md: "1700px" },
+              }}
+            >
+              <Routes>
+                <Route index element={<Home />} />
 
-          <Route
-            path="create"
-            element={<ArticuloAltaModificacion updateMode={false} />}
-          />
+                <Route path="articulo">
+                  <Route index element={<ArticuloListado />} />
 
-          <Route
-            path="update/:articuloCod"
-            element={<ArticuloAltaModificacion updateMode={true} />}
-          />
+                  <Route
+                    path="create"
+                    element={<ArticuloAltaModificacion updateMode={false} />}
+                  />
 
-          <Route path=":articuloCod" element={<ArticuloConsulta />} />
-        </Route>
+                  <Route
+                    path="update/:articuloCod"
+                    element={<ArticuloAltaModificacion updateMode={true} />}
+                  />
 
-        <Route path="orden-compra">
-          <Route index element={<OrdenCompraListado />} />
+                  <Route path=":articuloCod" element={<ArticuloConsulta />} />
+                </Route>
 
-          <Route path=":ordenCompraCod" element={<OrdenCompraConsulta />} />
+                <Route path="orden-compra">
+                  <Route index element={<OrdenCompraListado />} />
 
-          <Route
-            path="create"
-            element={<OrdenCompraAltaModificacion updateMode={false} />}
-          />
+                  <Route
+                    path=":ordenCompraCod"
+                    element={<OrdenCompraConsulta />}
+                  />
 
-          <Route
-            path="update/:ordenCompraCod"
-            element={<OrdenCompraAltaModificacion updateMode={true} />}
-          />
-        </Route>
+                  <Route
+                    path="create"
+                    element={<OrdenCompraAltaModificacion updateMode={false} />}
+                  />
 
-        <Route path="venta">
-          <Route index element={<VentaListado />} />
+                  <Route
+                    path="update/:ordenCompraCod"
+                    element={<OrdenCompraAltaModificacion updateMode={true} />}
+                  />
+                </Route>
 
-          <Route path=":ventaCod" element={<VentaConsulta />} />
+                <Route path="venta">
+                  <Route index element={<VentaListado />} />
 
-          <Route
-            path="create"
-            element={<VentaAltaModificacion updateMode={false} />}
-          />
-          <Route
-            path="update/:ventaCod"
-            element={<VentaAltaModificacion updateMode={true} />}
-          />
-        </Route>
+                  <Route path=":ventaCod" element={<VentaConsulta />} />
 
-        <Route path="proveedor">
-          <Route index element={<ProveedorListado />} />
+                  <Route
+                    path="create"
+                    element={<VentaAltaModificacion updateMode={false} />}
+                  />
+                  <Route
+                    path="update/:ventaCod"
+                    element={<VentaAltaModificacion updateMode={true} />}
+                  />
+                </Route>
 
-          <Route path=":proveedorCod" element={<ProveedorConsulta />} />
+                <Route path="proveedor">
+                  <Route index element={<ProveedorListado />} />
 
-          <Route
-            path="create"
-            element={<ProveedorAltaModificacion updateMode={false} />}
-          />
-          <Route
-            path="update/:proveedorCod"
-            element={<ProveedorAltaModificacion updateMode={true} />}
-          />
-        </Route>
-      </Routes>
-    </>
+                  <Route path=":proveedorCod" element={<ProveedorConsulta />} />
+
+                  <Route
+                    path="create"
+                    element={<ProveedorAltaModificacion updateMode={false} />}
+                  />
+                  <Route
+                    path="update/:proveedorCod"
+                    element={<ProveedorAltaModificacion updateMode={true} />}
+                  />
+                </Route>
+              </Routes>
+            </Box>
+            <Footer />
+          </Stack>
+        </Box>
+      </Box>
+    </AppTheme>
   );
 }
 
