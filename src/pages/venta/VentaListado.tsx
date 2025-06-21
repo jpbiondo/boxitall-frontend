@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useVenta } from "../../hooks/useVenta";
 import { DataGrid } from "@mui/x-data-grid";
+import { Button, Stack, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export function VentaListado() {
   const { isLoading, error, getVentaShort } = useVenta("/venta");
   const [ventas, setVentas] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setVentas([
@@ -23,7 +27,22 @@ export function VentaListado() {
 
   return (
     <div>
-      <h1>Ventas</h1>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+        marginBottom={2}
+      >
+        <Typography variant="h2">Ventas</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/venta/create")}
+          startIcon={<Add />}
+        >
+          Crear venta
+        </Button>
+      </Stack>
       <DataGrid rows={ventas} columns={columns} loading={isLoading} />
     </div>
   );

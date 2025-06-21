@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { Venta } from "../../types/domain/venta/Venta";
 
@@ -17,7 +17,9 @@ export function VentaAltaModificacion({
 
   return (
     <div>
-      <h1>{updateMode ? "Actualizar" : "Crear"} Venta</h1>
+      <Typography variant="h2" marginBottom={2}>
+        {updateMode ? "Actualizar" : "Crear"} Venta
+      </Typography>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ display: "flex", flexDirection: "column", gap: "10px" }}

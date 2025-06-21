@@ -1,11 +1,13 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 
 export function ProveedorConsulta() {
   const { proveedorCod } = useParams();
   return (
     <div>
-      <h1>Proveedor Nombre {proveedorCod}</h1>
+      <Typography variant="h2" marginBottom={2}>
+        Proveedor Nombre {proveedorCod}
+      </Typography>
       <div>
         <Link to={`/proveedor/update/${proveedorCod}`}>
           <Button variant="contained" color="primary">
