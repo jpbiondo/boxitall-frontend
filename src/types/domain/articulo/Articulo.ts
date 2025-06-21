@@ -13,8 +13,7 @@ export interface Articulo {
   proveedorPredeterminadoId: number | null;
   proveedorPredeterminadoNombre: string | null;
 
-
-  articuloProveedores: ArticuloProveedor[];
+  proveedores: ArticuloProveedor[];
 
   modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
   restanteProximoPedido: number;
@@ -29,7 +28,7 @@ export interface ArticuloProveedor {
   proveedor: Proveedor;
 }
 
-export interface ArticuloModeloInventario{
+export interface ArticuloModeloInventario {
   stockSeguridad: number;
   nombre: string;
 }

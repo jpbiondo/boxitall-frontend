@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import ArticuloForm from "../../components/ArticuloForm";
 
 interface ArticuloAltaModificacionProps {
@@ -9,7 +10,9 @@ export function ArticuloAltaModificacion({
 }: ArticuloAltaModificacionProps) {
   return (
     <div>
-      <h1>{updateMode ? "Actualizar" : "Crear"} Artículo</h1>
+      <Typography variant="h2" marginBottom={2}>
+        {updateMode ? "Actualizar" : "Crear"} Artículo
+      </Typography>
       <ArticuloForm />
     </div>
   );
