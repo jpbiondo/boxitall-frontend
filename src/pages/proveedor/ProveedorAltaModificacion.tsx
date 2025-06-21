@@ -1,10 +1,12 @@
 // TODO: Añadir validaciones
 // TODO: Conectar al backend
 // TODO: Añadir artículos
-import { Button, TextField } from "@mui/material";
+import { Button, Stack, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
 import { useProveedor } from "../../hooks/useProveedor";
+import { Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput extends Proveedor {}
 
@@ -17,14 +19,16 @@ export function ProveedorAltaModificacion({
 }: ProveedorAltaModificacionProps) {
   const { register, handleSubmit } = useForm<IFormInput>();
   const { createProveedor } = useProveedor();
-
+  const navigate = useNavigate();
   const onSubmit = (data: IFormInput) => {
     createProveedor(data);
-  }
+  };
 
   return (
     <div>
-      <h1>{updateMode ? "Actualizar" : "Crear"} Proveedor</h1>
+      <Typography variant="h2" marginBottom={2}>
+        {updateMode ? "Actualizar" : "Crear"} Proveedor
+      </Typography>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ display: "flex", flexDirection: "column", gap: "10px" }}

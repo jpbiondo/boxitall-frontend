@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useArticulo } from "../../hooks/useArticulo";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
-import { Button, IconButton } from "@mui/material";
-import { Visibility } from "@mui/icons-material";
+import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -13,55 +13,37 @@ export const ArticuloListado = () => {
   const navigate = useNavigate();
 
   const handleGetArticulo = (articuloCod: number) => {
-    navigate(`${articuloCod}`);
+    navigate(`/articulo/${articuloCod}`);
+  };
+
+  const handleUpdateArticulo = (articuloCod: number) => {
+    navigate(`/articulo/update/${articuloCod}`);
+  };
+
+  const handleDeleteArticulo = (articuloCod: number) => {
+    console.log(`MOC deleting article ${articuloCod}`);
   };
 
   useEffect(() => {
-    getArticulosShort().then( (articulos) => {
+    getArticulosShort().then((articulos) => {
       articulos.forEach((articulo) => {
-        const date:Date = new Date(articulo.fechaProximoPedido);
+        const date: Date = new Date(articulo.fechaProximoPedido);
         articulo.fechaProximoPedido = date.toUTCString();
-      })
-      articulos.map((articulo)=>{
-      articulo.modeloInventario == "Lote Fijo"?articulo.fechaProximoPedido = "-":articulo.restanteProximoPedido="-"
-      articulo.cgi == "0"?articulo.cgi = "-":{}
-      articulo.proveedorPredeterminadoId == "0"?articulo.proveedorPredeterminadoId = "-":{}
-      articulo.proveedorPredeterminadoNombre == "Sin proveedor predeterminado"?articulo.proveedorPredeterminadoNombre = "-":{}
+      });
+      // articulos.map((articulo) => {
+      //   articulo.modeloInventario == "Lote Fijo"
+      //     ? (articulo.fechaProximoPedido = "-")
+      //     : (articulo.restanteProximoPedido = "-");
+      //   articulo.cgi == "0" ? (articulo.cgi = "-") : {};
+      //   articulo.proveedorPredeterminadoId == "0"
+      //     ? (articulo.proveedorPredeterminadoId = "-")
+      //     : {};
+      //   articulo.proveedorPredeterminadoNombre == "Sin proveedor predeterminado"
+      //     ? (articulo.proveedorPredeterminadoNombre = "-")
+      //     : {};
+      // });
+      setArticulos(articulos);
     });
-    setArticulos(articulos)
-  }
-  );
-
-    // MOC DATA
-    /*setArticulos([
-      {
-        id: 1,
-        articuloCod: 1,
-        articuloNombre: "Articulo 1",
-        stock: 100,
-        articuloCostoPrecio: 100,
-        proveedorPred: "Pelotudo",
-        modeloInventario: "Mierda",
-      },
-      {
-        id: 2,
-        articuloCod: 2,
-        articuloNombre: "Articulo 2",
-        stock: 200,
-        articuloCostoPrecio: 200,
-        proveedorPred: "Pelotudo",
-        modeloInventario: "Mierda",
-      },
-      {
-        id: 3,
-        articuloCod: 3,
-        articuloNombre: "Articulo 3",
-        stock: 300,
-        articuloCostoPrecio: 300,
-        proveedorPred: "Pelotudo",
-        modeloInventario: "Mierda",
-      },
-    ]);*/
   }, [getArticulosShort]);
 
   // Dev time debugging
@@ -71,40 +53,130 @@ export const ArticuloListado = () => {
     }
   }, [error]);
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "nombre", headerName: "Nombre", width: 200 },
-    { field: "stock", headerName: "Stock", width: 100 },
-    { field: "cgi", headerName: "CGI", width: 100 },
+  const columns: GridColDef<any>[] = [
+    { field: "id", headerName: "ID" },
+    { field: "nombre", headerName: "Nombre" },
+    { field: "stock", headerName: "Stock" },
+    { field: "cgi", headerName: "CGI" },
 
-    { field: "proveedorPredeterminadoId", headerName: "ProvPredId", width: 100 },
-    { field: "proveedorPredeterminadoNombre", headerName: "ProvPredNombre", width: 100 },
+    {
+      field: "proveedorPredeterminadoId",
+      headerName: "ID Prov (Pred)",
+      renderCell: (params: any) => {
+        return params.row.proveedorPredeterminadoId == "0"
+          ? "-"
+          : params.row.proveedorPredeterminadoId;
+      },
+    },
+    {
+      field: "proveedorPredeterminadoNombre",
+      headerName: "Nombre Prov (Pred)",
+      renderCell: (params: any) => {
+        return params.row.proveedorPredeterminadoNombre ==
+          "Sin proveedor predeterminado"
+          ? "-"
+          : params.row.proveedorPredeterminadoNombre;
+      },
+    },
 
-    { field: "modeloInventario", headerName: "Modelo", width: 100 },
-    
-    { field: "fechaProximoPedido", headerName: "Próximo pedido", width: 100 },
-    { field: "restanteProximoPedido", headerName: "Unidades hasta próximo pedido", width: 100 },
+    {
+      field: "modeloInventario",
+      headerName: "Modelo",
+      width: 100,
+      filterable: false,
+      renderCell: (params: any) => {
+        // TODO: ADD A CIRCLE WITH COLOR BASED ON THE MODEL INVENTORY
+
+        return params.row.modeloInventario == "LoteFijo" ? (
+          <Chip
+            label="Lote Fijo"
+            color="success"
+            variant="outlined"
+            size="medium"
+          />
+        ) : (
+          <Chip
+            label="Lote Variable"
+            color="error"
+            variant="outlined"
+            size="medium"
+          />
+        );
+      },
+    },
+
+    {
+      field: "fechaProximoPedido",
+      headerName: "Próximo pedido",
+      width: 100,
+      renderCell: (params: any) => {
+        return params.row.modeloInventario == "LoteFijo"
+          ? params.row.fechaProximoPedido
+          : "-";
+      },
+    },
+    {
+      field: "restanteProximoPedido",
+      headerName: "Unidades hasta próximo pedido",
+      width: 100,
+      renderCell: (params: any) => {
+        return params.row.modeloInventario == "LoteFijo"
+          ? params.row.restanteProximoPedido
+          : "-";
+      },
+    },
 
     {
       field: "actions",
       headerName: "Acciones",
-      width: 100,
+      filterable: false,
+      sortable: false,
       renderCell: (params: any) => (
-        <IconButton
-          color="primary"
-          onClick={() => handleGetArticulo(params.row.id)}
-        >
-          <Visibility />
-        </IconButton>
+        <Stack direction="row" spacing={1}>
+          <IconButton
+            color="error"
+            onClick={() => handleUpdateArticulo(params.row.articuloCod)}
+            size="small"
+          >
+            <Edit />
+          </IconButton>
+          <IconButton
+            color="primary"
+            onClick={() => handleDeleteArticulo(params.row.articuloCod)}
+            size="small"
+          >
+            <Delete />
+          </IconButton>
+        </Stack>
       ),
     },
-
   ];
 
   return (
     <div>
-      <h1>Articulos</h1>
-      <DataGrid rows={articulos} columns={columns} loading={isLoading} />
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+        marginBottom={2}
+      >
+        <Typography variant="h2">Artículos</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/articulo/create")}
+          startIcon={<Add />}
+        >
+          Crear articulo
+        </Button>
+      </Stack>
+      {/* TODO: DATA GRID EACH COLUMNS SHOULD BE FULLY SHOWN IN WIDTH */}
+      <DataGrid
+        disableColumnMenu
+        rows={articulos}
+        columns={columns}
+        loading={isLoading}
+      />
     </div>
   );
 };

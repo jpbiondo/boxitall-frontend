@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useProveedor } from "../../hooks/useProveedor";
 import { DataGrid } from "@mui/x-data-grid";
+import { Add } from "@mui/icons-material";
+import { Button, Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export function ProveedorListado() {
-  const { isLoading, error, getProveedorShort } = useProveedor("/proveedor");
+  const { isLoading, error, getProveedorShort } = useProveedor();
   const [proveedores, setProveedores] = useState<any[]>([]);
-
-  useEffect(() => {
+  const navigate = useNavigate();
+  /*useEffect(() => {
     setProveedores([
       {
         id: 1,
@@ -27,7 +30,19 @@ export function ProveedorListado() {
         proveedorTelefono: "123456789",
       },
     ]);
-  }, []);
+  }, []);*/
+
+  useEffect(() => {
+    getProveedorShort().then((proveedores) => {
+      setProveedores(proveedores);
+    });
+  }, [getProveedorShort]);
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 100 },
@@ -38,7 +53,22 @@ export function ProveedorListado() {
 
   return (
     <div>
-      <h1>Proveedor</h1>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+        marginBottom={2}
+      >
+        <Typography variant="h2">Proveedores</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/proveedor/create")}
+          startIcon={<Add />}
+        >
+          Crear proveedor
+        </Button>
+      </Stack>
       <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
     </div>
   );
