@@ -16,7 +16,7 @@ export interface Articulo {
 
   articuloProveedores: ArticuloProveedor[];
 
-  modeloInventario: ArticuloModeloInventario;
+  modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
   restanteProximoPedido: number;
 }
 

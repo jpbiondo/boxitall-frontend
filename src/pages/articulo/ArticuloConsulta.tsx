@@ -130,6 +130,10 @@ export function ArticuloConsulta() {
           </p>
 
           <p>
+            Demanda anual: <span> { articulo.demanda } </span>
+          </p>
+
+          <p>
             Nivel de servicio: <span> {articulo.nivelServicio}</span>
           </p>
 

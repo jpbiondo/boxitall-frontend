@@ -23,7 +23,7 @@ export function useArticulo() {
 
   const createArticulo = useCallback(
     async (data: Articulo) => {
-      const response: Articulo = await post(endpoint, data);
+      const response: Articulo = await post(`${endpoint}/add`, data);
       return response;
     },
     [post, endpoint]
