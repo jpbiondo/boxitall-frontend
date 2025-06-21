@@ -73,14 +73,6 @@ export default function ArticuloForm({
     });
   };
 
-  useEffect(() => {
-    if (!articulo) return;
-
-    articulo.proveedores.map((artProv) => {
-      append(artProv);
-    });
-  }, [articulo]);
-
   async function onSubmit(data: IFormValues) {
     console.log(data);
 
