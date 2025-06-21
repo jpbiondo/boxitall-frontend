@@ -1,54 +1,96 @@
 import { useCallback } from "react";
 import { useHttp } from "./useHttp";
-import type { OrdenCompraShortDTO } from "../types/domain/orden-compra/OrdenCompraShortDTO";
-import type { OrdenCompra } from "../types/domain/orden-compra/OrdenCompra";
+import type { DTOOrdenCompraAlta } from "../types/domain/orden-compra/DTOOrdenCompraAlta";
+import type { DTOOrdenCompraArticuloAlta } from "../types/domain/orden-compra/DTOOrdenCompraArticuloAlta";
+import type { DTOOrdenCompraListadoActivas } from "../types/domain/orden-compra/DTOOrdenCompraListadoActivas";
+import type { DTOOrdenCompraObtenerDetalle } from "../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
+import { API_URL } from "../utils/constants";
 
-export function useOrdenCompra(endpoint: string) {
+export function useOrdenCompra() {
+  const endpoint = "/orden-compra";
   const { get, post, put, del, error, isLoading } = useHttp();
 
-  const getOrdenCompraShort = useCallback(async () => {
-    const response: OrdenCompraShortDTO[] = await get(`${endpoint}/short`);
-    return response;
-  }, [get, endpoint]);
+  const crearOrdenCompra = useCallback(
+    async (ordenCompraDTO: DTOOrdenCompraAlta) => {
+      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO); // corregido "$" sobrante
+      return response;
+    },
+    [post]
+  );
 
-  const getOrdenCompraById = useCallback(
-    async (id: string) => {
-      const response: OrdenCompra = await get(`${endpoint}/${id}`);
+  const cancelarOrdenCompra = useCallback(
+    async (id: number) => {
+      const response = await put(`${endpoint}/${id}/detalle/cancelar-orden`);
+      return response;
+    },
+    [put]
+  );
+
+  const eliminarDetalleOrden = useCallback(
+    async (idOrden: number, idDetalle: number) => {
+      const response = await del(`${API_URL}${endpoint}/${idOrden}/detalle/${idDetalle}/eliminar-detalle`);
+      return response;
+    },
+    [del]
+  );
+
+  const actualizarCantidadDetalle = useCallback(
+    async (idOrden: number, idDetalle: number, nuevaCantidad: number) => {
+      const url = `${API_URL}${endpoint}/${idOrden}/detalle/${idDetalle}/actualizar-cantidad?nuevaCantidad=${nuevaCantidad}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+      });
+
+      return response;
+    },
+    []
+  );
+
+  const avanzarEstadoOrden = useCallback(
+    async (idOrden: number) => {
+      const response: string[] = await post(`${API_URL}${endpoint}/${idOrden}/detalle/avanzar-estado`);
+      return response;
+    },
+    [post]
+  );
+
+  const obtenerDetalleOrden = useCallback(
+    async (idOrden: number) => {
+      const response: DTOOrdenCompraObtenerDetalle = await get(`${API_URL}${endpoint}/${idOrden}/detalle`);
+      return response;
+    },
+    [get,endpoint]
+  );
+
+  const listarOrdenesActivas = useCallback(
+    async () => {
+      const response: DTOOrdenCompraListadoActivas[] = await get(`${API_URL}${endpoint}/activas`); // corregido: sin API_URL
       return response;
     },
     [get, endpoint]
   );
 
-  const createOrdenCompra = useCallback(
-    async (data: OrdenCompra) => {
-      const response: OrdenCompra = await post(endpoint, data);
+  const agregarArticuloAOrden = useCallback(
+    async (idOrden: number, nuevoDetalleDTO: DTOOrdenCompraArticuloAlta) => {
+      const response: DTOOrdenCompraObtenerDetalle = await post(
+        `${endpoint}/${idOrden}/detalle/agregar-articulo`,
+        nuevoDetalleDTO
+      );
       return response;
     },
-    [post, endpoint]
-  );
-
-  const updateOrdenCompra = useCallback(
-    async (id: string, data: OrdenCompra) => {
-      const response: OrdenCompra = await put(`${endpoint}/${id}`, data);
-      return response;
-    },
-    [put, endpoint]
-  );
-
-  const deleteOrdenCompra = useCallback(
-    async (id: string) => {
-      const response: boolean = await del(`${endpoint}/${id}`);
-      return response;
-    },
-    [del, endpoint]
+    [post]
   );
 
   return {
-    getOrdenCompraShort,
-    getOrdenCompraById,
-    createOrdenCompra,
-    updateOrdenCompra,
-    deleteOrdenCompra,
+    crearOrdenCompra,
+    cancelarOrdenCompra,
+    eliminarDetalleOrden,
+    actualizarCantidadDetalle,
+    avanzarEstadoOrden,
+    obtenerDetalleOrden,
+    listarOrdenesActivas,
+    agregarArticuloAOrden,
     error,
     isLoading,
   };

@@ -1,19 +1,21 @@
 import { useCallback } from "react";
 import { useHttp } from "./useHttp";
-import type { ArticuloShortDTO } from "../types/domain/articulo/ArticuloShortDTO";
 import type { Articulo } from "../types/domain/articulo/Articulo";
+import type { ArticuloList } from "../types/domain/articulo/ArticuloList";
+import { API_URL } from "../utils/constants";
 
-export function useArticulo(endpoint: string) {
+export function useArticulo() {
+  const endpoint = `${API_URL}/articulo`;
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getArticulosShort = useCallback(async () => {
-    const response: ArticuloShortDTO[] = await get(`${endpoint}/short`);
+    const response: ArticuloList[] = await get(`${endpoint}/listAll`);
     return response;
   }, [get, endpoint]);
 
   const getArticuloById = useCallback(
     async (id: string) => {
-      const response: Articulo = await get(`${endpoint}/${id}`);
+      const response: Articulo = await get(`${endpoint}/getDetalles?id=${id}`);
       return response;
     },
     [get, endpoint]
@@ -21,7 +23,7 @@ export function useArticulo(endpoint: string) {
 
   const createArticulo = useCallback(
     async (data: Articulo) => {
-      const response: Articulo = await post(endpoint, data);
+      const response: Articulo = await post(`${endpoint}/add`, data);
       return response;
     },
     [post, endpoint]

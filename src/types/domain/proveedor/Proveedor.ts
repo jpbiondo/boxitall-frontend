@@ -1,6 +1,6 @@
 export interface Proveedor {
+  proveedorId: number;
   proveedorCod: number;
   proveedorNombre: string;
-  proveedorFechaBaja: Date | null;
   proveedorTelefono: string;
 }
