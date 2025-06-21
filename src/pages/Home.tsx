@@ -6,8 +6,14 @@ import {
   getOrderSaleIcon,
   getProviderIcon,
   getSaleIcon,
-} from "../utils/componentsConstants";
+} from "../utils/domainIcons";
 import { useNavigate } from "react-router";
+import {
+  articuloColorRange,
+  ordenColorRange,
+  proveedorColorRange,
+  ventaColorRange,
+} from "../utils/domainColors";
 
 export function Home() {
   const navigate = useNavigate();
@@ -37,6 +43,7 @@ export function Home() {
             title="Total de artículos"
             value={100}
             icon={getArticleIcon()}
+            colorRange={articuloColorRange}
           />
         </Grid>
         <Grid size={{ sm: 12, md: 4 }}>
@@ -44,6 +51,7 @@ export function Home() {
             title="Total de órdenes de compra"
             value={100}
             icon={getOrderSaleIcon()}
+            colorRange={ordenColorRange}
           />
         </Grid>
         <Grid size={{ sm: 12, md: 4 }}>
@@ -51,6 +59,7 @@ export function Home() {
             title="Total de ventas"
             value={100}
             icon={getSaleIcon()}
+            colorRange={ventaColorRange}
           />
         </Grid>
       </Grid>
@@ -62,6 +71,7 @@ export function Home() {
             description="Gestiona los artículos y sus proveedores"
             icon={getArticleIcon()}
             action={() => handleNavigate("/articulo")}
+            colorRange={articuloColorRange}
           />
         </Grid>
         <Grid size={{ sm: 12, lg: 6 }}>
@@ -70,6 +80,7 @@ export function Home() {
             description="Gestiona las órdenes de compra"
             icon={getOrderSaleIcon()}
             action={() => handleNavigate("/orden-compra")}
+            colorRange={ordenColorRange}
           />
         </Grid>
         <Grid size={{ sm: 12, lg: 6 }}>
@@ -78,6 +89,7 @@ export function Home() {
             description="Gestiona los proveedores"
             icon={getProviderIcon()}
             action={() => handleNavigate("/proveedor")}
+            colorRange={proveedorColorRange}
           />
         </Grid>
         <Grid size={{ sm: 12, lg: 6 }}>
@@ -86,6 +98,7 @@ export function Home() {
             description="Gestiona las ventas"
             icon={getSaleIcon()}
             action={() => handleNavigate("/venta")}
+            colorRange={ventaColorRange}
           />
         </Grid>
       </Grid>

@@ -1,15 +1,24 @@
-import { Card, CardContent, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  ColorRange,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 interface CustomCardStatProps {
   title: string;
   value: number;
   icon: React.ReactNode;
+  colorRange: ColorRange;
 }
 
 export default function CustomCardStat({
   title,
   value,
   icon,
+  colorRange,
 }: CustomCardStatProps) {
   return (
     <Card>
@@ -29,7 +38,14 @@ export default function CustomCardStat({
             </Typography>
           </Stack>
           <Stack direction="column" alignItems="center" justifyContent="center">
-            {icon}
+            <Box
+              sx={{
+                padding: 1,
+                color: colorRange[500],
+              }}
+            >
+              {icon}
+            </Box>
           </Stack>
         </Stack>
       </CardContent>

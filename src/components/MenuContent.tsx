@@ -12,7 +12,7 @@ import {
   getOrderSaleIcon,
   getProviderIcon,
   getSaleIcon,
-} from "../utils/componentsConstants";
+} from "../utils/domainIcons";
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, path: "/" },
