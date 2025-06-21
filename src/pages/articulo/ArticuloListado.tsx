@@ -87,7 +87,7 @@ export const ArticuloListado = () => {
       renderCell: (params: any) => {
         // TODO: ADD A CIRCLE WITH COLOR BASED ON THE MODEL INVENTORY
 
-        return params.row.modeloInventario == "LoteFijo" ? (
+        return params.row.modeloInventario == "Lote Fijo" ? (
           <Chip
             label="Lote Fijo"
             color="success"
@@ -96,7 +96,7 @@ export const ArticuloListado = () => {
           />
         ) : (
           <Chip
-            label="Lote Variable"
+            label="Intervalo Fijo"
             color="error"
             variant="outlined"
             size="medium"
@@ -110,7 +110,7 @@ export const ArticuloListado = () => {
       headerName: "Próximo pedido",
       width: 100,
       renderCell: (params: any) => {
-        return params.row.modeloInventario == "LoteFijo"
+        return params.row.modeloInventario == "Intervalo Fijo"
           ? params.row.fechaProximoPedido
           : "-";
       },
@@ -120,7 +120,7 @@ export const ArticuloListado = () => {
       headerName: "Unidades hasta próximo pedido",
       width: 100,
       renderCell: (params: any) => {
-        return params.row.modeloInventario == "LoteFijo"
+        return params.row.modeloInventario == "Lote Fijo"
           ? params.row.restanteProximoPedido
           : "-";
       },
@@ -135,14 +135,14 @@ export const ArticuloListado = () => {
         <Stack direction="row" spacing={1}>
           <IconButton
             color="error"
-            onClick={() => handleUpdateArticulo(params.row.articuloCod)}
+            onClick={() => handleUpdateArticulo(params.row.id)}
             size="small"
           >
             <Edit />
           </IconButton>
           <IconButton
             color="primary"
-            onClick={() => handleDeleteArticulo(params.row.articuloCod)}
+            onClick={() => handleDeleteArticulo(params.row.id)}
             size="small"
           >
             <Delete />
