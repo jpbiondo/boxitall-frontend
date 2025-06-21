@@ -5,4 +5,5 @@ export interface DTOOrdenCompraArticuloObtenerDetalle {
   cantidad: number;
   precio: number;
   idOCarticulo: number; 
+  loteoptimo:number;
 }
