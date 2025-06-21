@@ -2,32 +2,70 @@
 // TODO: Añadir lista de modelos de inventario
 // TODO: Conectar con el backend
 // TODO: Añadir validaciones formulario
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import type { Articulo } from "../types/domain/articulo/Articulo";
+import { Controller, set, useFieldArray, useForm } from "react-hook-form";
+import type { Articulo, ArticuloProveedor } from "../types/domain/articulo/Articulo";
 import { useArticulo } from "../hooks/useArticulo";
-import { Button, IconButton, MenuItem, Select, TextField } from "@mui/material";
+import { Button, IconButton, MenuItem, Select, Step, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Proveedor } from "../types/domain/proveedor/Proveedor";
 import ArticuloAMProveedorPopupTable from "../pages/articulo/ArticuloAMProveedorPopupTable";
 import { Add, Delete } from "@mui/icons-material";
+import type { ArticuloAlta } from "../types/domain/articulo/ArticuloAlta";
+import { useNavigate, useParams } from "react-router";
 
-interface IFormValues extends Articulo {
-  modeloInventarioTipo: "Lote Fijo" | "Intervalo Fijo";
+interface IFormValues extends ArticuloAlta {
 }
 
 interface ArticuloFormProps {
   onSuccess?: () => void;
-  articulo?: Articulo;
+  //articulo?: Articulo;
+  updateMode: boolean;
 }
 
 export default function ArticuloForm({
-  articulo,
   onSuccess,
+  updateMode
 }: ArticuloFormProps) {
-  const { createArticulo, updateArticulo, error, isLoading } = useArticulo();
+  const { createArticulo, updateArticulo, error, isLoading, getArticuloById} = useArticulo();
+  const [ articulo, setArticulo ] = useState<Articulo>();
+  const { articuloCod } = useParams();
+  const navigate = useNavigate();
+
+  // Recibe el art desde el local storage
+  useEffect(()=>{
+    updateMode?
+    getArticuloById(articuloCod!).then((art) => {
+      setArticulo(art);
+      reset(art);
+    })
+    : undefined;
+    // if(updateMode && localStorage.getItem("articulo") != null){
+    //   setArticulo(JSON.parse(localStorage.getItem("articulo")!));
+    // }
+    // else
+    //   setArticulo(undefined)
+  }, []);
+  
+  useEffect(()=>{
+
+    // if (!articulo) return;
+    // articulo.articuloProveedores?.map((artProv) => {
+    //   append(artProv);
+    // });
+
+    // if(articulo != undefined){
+    //   if(articuloCod != articulo.id?.toString()){
+    //     navigate("/articulo/create", {replace : true});
+    //   }
+    //   reset(articulo);
+    // }
+
+    // console.log(articulo);
+
+  }, [articulo]);
 
   // React Hook Form set-up
-  const { register, control, watch, handleSubmit } = useForm<IFormValues>({
+  const { register, control, watch, handleSubmit, getValues, setValue, reset } = useForm<IFormValues>({
     defaultValues: articulo
       ? {
           id: articulo.id,
@@ -41,7 +79,6 @@ export default function ArticuloForm({
 
           articuloProveedores: articulo.articuloProveedores,
           proveedorPredeterminadoId: articulo.proveedorPredeterminadoId,
-          proveedorPredeterminadoNombre: articulo.proveedorPredeterminadoNombre,
 
           modeloInventario: articulo.modeloInventario,
         }
@@ -63,14 +100,6 @@ export default function ArticuloForm({
       proveedor: proveedor,
     });
   };
-
-  useEffect(() => {
-    if (!articulo) return;
-
-    articulo.articuloProveedores.map((artProv) => {
-      append(artProv);
-    });
-  }, [articulo]);
 
   async function onSubmit(data: IFormValues) {
     console.log(data);
@@ -96,7 +125,7 @@ export default function ArticuloForm({
   };
 
   //   Articulo Modelo Inventario
-  const modeloInventarioTipo = watch("modeloInventarioTipo");
+  const modeloInventarioTipo = watch("modeloInventario.nombre");
 
   return (
     <form
@@ -108,38 +137,46 @@ export default function ArticuloForm({
       }}
     >
       {/* Base Articulo Fields */}
-      <TextField {...register("nombre")} label="Nombre del artículo"/>
+      <TextField
+        {...register("nombre")}
+        label="Nombre del artículo"
+        />
 
       <TextField
         multiline
         rows={3}
         {...register("descripcion")}
         label="Descripción del artículo"
-      />
+        />
 
       <TextField
         {...register("costoAlmacenamiento")}
         label="Costo almacenamiento artículo"
         type="number"
-      />
+        />
 
       <TextField
         {...register("demanda")}
         label="Cantidad demandada del artículo"
         type="number"
-      />
+        />
 
       <TextField
         {...register("desviacionEstandar")}
         label="Desviación estandar demanda artículo"
         type="number"
-      />
+        />
 
       <TextField
         {...register("nivelServicio")}
         label="Nivel de servicio del artículo"
         type="number"
-      />
+        slotProps={{ htmlInput: {
+          min: 0,
+          max: 1,
+          step: "any"
+        }}}
+        />
 
       <TextField
         {...register("stock")}
@@ -152,7 +189,7 @@ export default function ArticuloForm({
         open={openProveedoresPopUp}
         setIsOpen={setOpenProveedoresPopUp}
         onAddArtProveedor={onAddArtProveedor}
-        artProveedores={fields.map(({ id, ...rest }) => rest)}
+        artProveedores={fields.map(({ id, ...rest }) => rest as ArticuloProveedor)}
       />
 
       <div>
@@ -170,8 +207,8 @@ export default function ArticuloForm({
           <div>
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
               <h3>
-                {field.proveedor.proveedorNombre} -{" "}
-                {field.proveedor.proveedorTelefono}
+                {/* {field.proveedor.proveedorNombre} -{" "}
+                {field.proveedor.proveedorTelefono} */}
               </h3>
               <IconButton
                 onClick={() => handleDeleteArtProveedor(index)}
@@ -224,12 +261,12 @@ export default function ArticuloForm({
             <MenuItem value="Intervalo Fijo">Modelo Intervalo Fijo</MenuItem>
           </Select>
         )}
-        name="modeloInventarioTipo"
+        name="modeloInventario.nombre"
       />
 
       <div style={{ display: "flex", gap: "1rem", flexDirection: "column" }}>
         {/* Articulo Modelo Inventario LF */}
-        {modeloInventarioTipo === "Lote Fijo" && (
+        {/* {modeloInventarioTipo === "Lote Fijo" && (
           <>
             <TextField
               label="Lote óptimo"
@@ -247,7 +284,7 @@ export default function ArticuloForm({
               {...register("modeloInventario.stockSeguridad")}
             />
           </>
-        )}
+        )} */}
 
         {/* Articulo Modelo Inventario IF */}
         {modeloInventarioTipo === "Intervalo Fijo" && (
@@ -256,7 +293,7 @@ export default function ArticuloForm({
               label="Fecha próximo pedido"
               slotProps={{ inputLabel: { shrink: true } }}
               type="date"
-              {...register("modeloInventario.fechaProximoPedido")}
+              {...register("modeloInventario.fechaProxPedido")}
             />
             <TextField
               label="Intervalo pedido"
@@ -264,15 +301,15 @@ export default function ArticuloForm({
               {...register("modeloInventario.intervaloPedido")}
             />
             <TextField
-              label="Intervalo máximo"
+              label="Inventario máximo"
               type="number"
-              {...register("modeloInventario.inventarioMax")}
+              {...register("modeloInventario.inventarioMaximo")}
             />
-            <TextField
+            {/* <TextField
               label="Stock de seguridad"
               type="number"
               {...register("modeloInventario.stockSeguridad")}
-            />
+            /> */}
           </>
         )}
       </div>

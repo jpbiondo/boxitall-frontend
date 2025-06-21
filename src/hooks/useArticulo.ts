@@ -3,6 +3,7 @@ import { useHttp } from "./useHttp";
 import type { Articulo } from "../types/domain/articulo/Articulo";
 import type { ArticuloList } from "../types/domain/articulo/ArticuloList";
 import { API_URL } from "../utils/constants";
+import type { ArticuloAlta } from "../types/domain/articulo/ArticuloAlta";
 
 export function useArticulo() {
   const endpoint = `${API_URL}/articulo`;
@@ -22,7 +23,7 @@ export function useArticulo() {
   );
 
   const createArticulo = useCallback(
-    async (data: Articulo) => {
+    async (data: ArticuloAlta) => {
       const response: Articulo = await post(`${endpoint}/add`, data);
       return response;
     },
@@ -30,7 +31,7 @@ export function useArticulo() {
   );
 
   const updateArticulo = useCallback(
-    async (id: string, data: Articulo) => {
+    async (id: string, data: ArticuloAlta) => {
       const response: Articulo = await put(`${endpoint}/${id}`, data);
       return response;
     },

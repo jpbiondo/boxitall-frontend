@@ -22,6 +22,7 @@ export function ArticuloConsulta() {
   useEffect(() => {
     getArticuloById(articuloCod!).then((articulo) => {
       setArticulo(articulo);
+      localStorage.setItem("articulo", JSON.stringify(articulo));
       articulo?.modeloInventario?setModInv(articulo.modeloInventario):{}
       articulo?.articuloProveedores?setArtProvsInfo():{}
     });

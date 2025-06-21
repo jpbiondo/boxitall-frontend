@@ -10,7 +10,7 @@ export function ArticuloAltaModificacion({
   return (
     <div>
       <h1>{updateMode ? "Actualizar" : "Crear"} Artículo</h1>
-      <ArticuloForm />
+      <ArticuloForm updateMode = {updateMode}/>
     </div>
   );
 }
