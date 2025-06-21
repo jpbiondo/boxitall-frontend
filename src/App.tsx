@@ -41,7 +41,7 @@ function App() {
         <Route path="orden-compra">
           <Route index element={<OrdenCompraListado />} />
 
-          <Route path=":ordenCompraCod" element={<OrdenCompraConsulta />} />
+           <Route path=":ordenCompraCod/detalle" element={<OrdenCompraConsulta />} />
 
           <Route
             path="create"
