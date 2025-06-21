@@ -2,7 +2,9 @@ import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Breadcrumbs, { breadcrumbsClasses } from "@mui/material/Breadcrumbs";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
+import { Fragment } from "react/jsx-runtime";
+import getBreadcrumbs, { pathDictionary } from "../utils/breadcrumbsUtils";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   margin: theme.spacing(1, 0),
@@ -15,36 +17,31 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
   },
 }));
 
-const breadcrumbRouteItems = [
-  { text: "Home", path: "/" },
-  { text: "Articulos", path: "/articulo" },
-  { text: "Proveedores", path: "/proveedor" },
-  { text: "Ordenes de Compra", path: "/orden-compra" },
-  { text: "Ventas", path: "/venta" },
-];
-
 export default function NavbarBreadcrumbs() {
   const location = useLocation();
-
-  const isActiveRoute = (path: string) => {
-    if (path === "/") {
-      return location.pathname === "/";
-    }
-    return location.pathname.startsWith(path);
-  };
+  const breadcrumbs = getBreadcrumbs(location.pathname, pathDictionary);
 
   return (
     <StyledBreadcrumbs
       aria-label="breadcrumb"
       separator={<NavigateNextRoundedIcon fontSize="small" />}
     >
-      <Typography variant="body1">Dashboard</Typography>
-      <Typography
-        variant="body1"
-        sx={{ color: "text.primary", fontWeight: 600 }}
-      >
-        {breadcrumbRouteItems.filter(({ path }) => isActiveRoute(path))[0].text}
-      </Typography>
+      {breadcrumbs.map((breadcrumb) => (
+        <Fragment key={breadcrumb.pathName}>
+          <Link to={breadcrumb.pathName}>
+            <Typography
+              variant="body1"
+              key={breadcrumb.pathName}
+              sx={{
+                color: breadcrumb.isActive ? "text.primary" : "text.secondary",
+                fontWeight: breadcrumb.isActive ? 600 : 400,
+              }}
+            >
+              {breadcrumb.name}
+            </Typography>
+          </Link>
+        </Fragment>
+      ))}
     </StyledBreadcrumbs>
   );
 }

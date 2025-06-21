@@ -1,8 +1,6 @@
 import Stack from "@mui/material/Stack";
 import NavbarBreadcrumbs from "./NavbarBreadcrumbs";
 
-import ColorModeIconDropdown from "../theme/ColorModeIconDropdown";
-
 export default function Header() {
   return (
     <Stack
