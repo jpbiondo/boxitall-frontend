@@ -86,7 +86,7 @@ export default function ArticuloForm({
           stock: articulo.stock,
           costoAlmacenamiento: articulo.costoAlmacenamiento,
 
-          proveedores: articulo.proveedores,
+          articuloProveedores: articulo.articuloProveedores,
           proveedorPredeterminadoId: articulo.proveedorPredeterminadoId,
 
           modeloInventario: articulo.modeloInventario,
@@ -95,7 +95,7 @@ export default function ArticuloForm({
   });
 
   const { fields, append, remove } = useFieldArray({
-    name: "proveedores",
+    name: "articuloProveedores",
     control,
   });
   // nigga I'm going nuts
@@ -114,7 +114,7 @@ export default function ArticuloForm({
   useEffect(() => {
     if (!articulo) return;
 
-    articulo.proveedores.map((artProv) => {
+    articulo.articuloProveedores.map((artProv) => {
       append(artProv);
     });
   }, [articulo]);
@@ -313,7 +313,7 @@ export default function ArticuloForm({
               open={openProveedoresPopUp}
               setIsOpen={setOpenProveedoresPopUp}
               onAddArtProveedor={onAddArtProveedor}
-              artProveedores={fields.map(({ id, ...rest }) => rest)}
+              artProveedores={fields.map(({ id, ...rest }) => rest as ArticuloProveedor)}
             />
             <Stack direction="column" spacing={2}>
               {fields.map((field, index) => (
@@ -342,22 +342,22 @@ export default function ArticuloForm({
                     <TextField
                       label="Cargo Pedido"
                       type="number"
-                      {...register(`proveedores.${index}.cargoPedido`)}
+                      {...register(`articuloProveedores.${index}.cargoPedido`)}
                     />
                     <TextField
                       label="Costo Compra"
                       type="number"
-                      {...register(`proveedores.${index}.costoCompra`)}
+                      {...register(`articuloProveedores.${index}.costoCompra`)}
                     />
                     <TextField
                       label="Costo Pedido"
                       type="number"
-                      {...register(`proveedores.${index}.costoPedido`)}
+                      {...register(`articuloProveedores.${index}.costoPedido`)}
                     />
                     <TextField
                       label="Demora entrega (días)"
                       type="number"
-                      {...register(`proveedores.${index}.demoraEntrega`)}
+                      {...register(`articuloProveedores.${index}.demoraEntrega`)}
                     />
                   </div>
                 </div>

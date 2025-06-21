@@ -13,7 +13,7 @@ export interface Articulo {
   proveedorPredeterminadoId: number | null;
   proveedorPredeterminadoNombre: string | null;
 
-  proveedores: ArticuloProveedor[];
+  articuloProveedores: ArticuloProveedor[];
 
   modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
   restanteProximoPedido: number;
