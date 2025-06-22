@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useHttp } from "./useHttp";
-import type { Venta } from "../types/domain/venta/Venta";
 import type { VentaShortDTO } from "../types/domain/venta/VentaShortDTO";
 import { API_URL } from "../utils/constants";
 import { VentaAltaDTO } from "../types/domain/venta/VentaAltaDTO";
+import { VentaGetByIdDTO } from "../types/domain/venta/VentaGetByIdDTO";
 
 export function useVenta() {
   const { get, post, error, isLoading } = useHttp();
@@ -15,7 +15,9 @@ export function useVenta() {
 
   const getVentaById = useCallback(
     async (id: string) => {
-      const response: Venta = await get(`${API_URL}/venta/getOne?id=${id}`);
+      const response: VentaGetByIdDTO = await get(
+        `${API_URL}/venta/getOne?id=${id}`
+      );
       return response;
     },
     [get]
