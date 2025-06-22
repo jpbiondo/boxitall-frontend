@@ -13,7 +13,7 @@ export function ArticuloAltaModificacion({
       <Typography variant="h2" marginBottom={2}>
         {updateMode ? "Actualizar" : "Crear"} Artículo
       </Typography>
-      <ArticuloForm />
+      <ArticuloForm updateMode = {updateMode}/>
     </div>
   );
 }

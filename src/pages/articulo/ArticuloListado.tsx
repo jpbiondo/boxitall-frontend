@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
 export const ArticuloListado = () => {
-  const { isLoading, error, getArticulosShort } = useArticulo();
+  const { isLoading, error, getArticulosShort, deleteArticulo } = useArticulo();
   const [articulos, setArticulos] = useState<ArticuloList[]>([]);
+  const [deleting, setDeleting] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleGetArticulo = (articuloCod: number) => {
@@ -20,8 +21,13 @@ export const ArticuloListado = () => {
     navigate(`/articulo/update/${articuloCod}`);
   };
 
-  const handleDeleteArticulo = (articuloCod: number) => {
-    console.log(`MOC deleting article ${articuloCod}`);
+  const handleDeleteArticulo = async (articuloCod: number) => { // TODO - Mejor delete
+    if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
+      setDeleting(true);
+      await deleteArticulo(articuloCod.toString());
+      setDeleting(false);
+      console.log(`Deleted article ${articuloCod}`);
+    }
   };
 
   useEffect(() => {
@@ -30,21 +36,9 @@ export const ArticuloListado = () => {
         const date: Date = new Date(articulo.fechaProximoPedido);
         articulo.fechaProximoPedido = date.toUTCString();
       });
-      // articulos.map((articulo) => {
-      //   articulo.modeloInventario == "Lote Fijo"
-      //     ? (articulo.fechaProximoPedido = "-")
-      //     : (articulo.restanteProximoPedido = "-");
-      //   articulo.cgi == "0" ? (articulo.cgi = "-") : {};
-      //   articulo.proveedorPredeterminadoId == "0"
-      //     ? (articulo.proveedorPredeterminadoId = "-")
-      //     : {};
-      //   articulo.proveedorPredeterminadoNombre == "Sin proveedor predeterminado"
-      //     ? (articulo.proveedorPredeterminadoNombre = "-")
-      //     : {};
-      // });
       setArticulos(articulos);
     });
-  }, [getArticulosShort]);
+  }, [getArticulosShort, deleting]);
 
   // Dev time debugging
   useEffect(() => {
@@ -87,7 +81,7 @@ export const ArticuloListado = () => {
       renderCell: (params: any) => {
         // TODO: ADD A CIRCLE WITH COLOR BASED ON THE MODEL INVENTORY
 
-        return params.row.modeloInventario == "LoteFijo" ? (
+        return params.row.modeloInventario == "Lote Fijo" ? (
           <Chip
             label="Lote Fijo"
             color="success"
@@ -96,7 +90,7 @@ export const ArticuloListado = () => {
           />
         ) : (
           <Chip
-            label="Lote Variable"
+            label="Intervalo Fijo"
             color="error"
             variant="outlined"
             size="medium"
@@ -110,7 +104,7 @@ export const ArticuloListado = () => {
       headerName: "Próximo pedido",
       width: 100,
       renderCell: (params: any) => {
-        return params.row.modeloInventario == "LoteFijo"
+        return params.row.modeloInventario == "Intervalo Fijo"
           ? params.row.fechaProximoPedido
           : "-";
       },
@@ -120,7 +114,7 @@ export const ArticuloListado = () => {
       headerName: "Unidades hasta próximo pedido",
       width: 100,
       renderCell: (params: any) => {
-        return params.row.modeloInventario == "LoteFijo"
+        return params.row.modeloInventario == "Lote Fijo"
           ? params.row.restanteProximoPedido
           : "-";
       },
@@ -135,14 +129,14 @@ export const ArticuloListado = () => {
         <Stack direction="row" spacing={1}>
           <IconButton
             color="error"
-            onClick={() => handleUpdateArticulo(params.row.articuloCod)}
+            onClick={() => handleUpdateArticulo(params.row.id)}
             size="small"
           >
             <Edit />
           </IconButton>
           <IconButton
             color="primary"
-            onClick={() => handleDeleteArticulo(params.row.articuloCod)}
+            onClick={() => handleDeleteArticulo(params.row.id)}
             size="small"
           >
             <Delete />
