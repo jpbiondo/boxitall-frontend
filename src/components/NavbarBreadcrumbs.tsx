@@ -3,7 +3,6 @@ import Typography from "@mui/material/Typography";
 import Breadcrumbs, { breadcrumbsClasses } from "@mui/material/Breadcrumbs";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { Link, useLocation } from "react-router";
-import { Fragment } from "react/jsx-runtime";
 import getBreadcrumbs, { pathDictionary } from "../utils/breadcrumbsUtils";
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
@@ -27,7 +26,7 @@ export default function NavbarBreadcrumbs() {
       separator={<NavigateNextRoundedIcon fontSize="small" />}
     >
       {breadcrumbs.map((breadcrumb) => (
-        <Fragment key={breadcrumb.pathName}>
+        <div key={breadcrumb.pathName}>
           <Link to={breadcrumb.pathName}>
             <Typography
               variant="body1"
@@ -40,7 +39,7 @@ export default function NavbarBreadcrumbs() {
               {breadcrumb.name}
             </Typography>
           </Link>
-        </Fragment>
+        </div>
       ))}
     </StyledBreadcrumbs>
   );

@@ -1,28 +1,54 @@
 import { useEffect, useState } from "react";
 import { useVenta } from "../../hooks/useVenta";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Stack, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { Add, Delete, Edit, Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import type { VentaShortDTO } from "../../types/domain/venta/VentaShortDTO";
 
 export function VentaListado() {
-  const { isLoading, error, getVentaShort } = useVenta("/venta");
-  const [ventas, setVentas] = useState<any[]>([]);
+  const { isLoading, error, getVentaShort } = useVenta();
+  const [ventas, setVentas] = useState<VentaShortDTO[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setVentas([
-      { id: 1, ventaCod: 1, ventaFecha: "2021-01-01", ventaTotal: 100 },
-      { id: 2, ventaCod: 2, ventaFecha: "2021-01-02", ventaTotal: 200 },
-      { id: 3, ventaCod: 3, ventaFecha: "2021-01-03", ventaTotal: 300 },
-    ]);
+    getVentaShort().then((ventas) => {
+      setVentas(ventas);
+      console.log(ventas);
+    });
   }, []);
 
+  const handleVerDetalle = (id: number) => {
+    navigate(`/venta/${id}`);
+  };
+
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "ventaCod", headerName: "Código", width: 100 },
-    { field: "ventaFecha", headerName: "Fecha", width: 200 },
-    { field: "ventaTotal", headerName: "Total", width: 200 },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 100,
+    },
+    {
+      field: "fechaVenta",
+      headerName: "Fecha",
+      width: 200,
+    },
+    {
+      field: "actions",
+      headerName: "Acciones",
+      width: 200,
+      renderCell: (params: any) => (
+        <Stack direction="row" spacing={1}>
+          <IconButton
+            color="primary"
+            onClick={() => handleVerDetalle(params.row.id)}
+            size="small"
+          >
+            <Visibility />
+          </IconButton>
+        </Stack>
+      ),
+    },
   ];
 
   return (
