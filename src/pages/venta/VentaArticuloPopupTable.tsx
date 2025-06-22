@@ -93,7 +93,7 @@ export default function VentaArticuloPopupTable({
         proveedorPredeterminadoId:
           parseInt(articulo.proveedorPredeterminadoId) || null,
         proveedorPredeterminadoNombre: articulo.proveedorPredeterminadoNombre,
-        proveedores: [],
+        articuloProveedores: [],
         modeloInventario: {} as any,
         restanteProximoPedido: parseInt(articulo.restanteProximoPedido) || 0,
       },
