@@ -97,14 +97,7 @@ function App() {
 
                   <Route path=":ventaCod" element={<VentaConsulta />} />
 
-                  <Route
-                    path="create"
-                    element={<VentaAltaModificacion updateMode={false} />}
-                  />
-                  <Route
-                    path="update/:ventaCod"
-                    element={<VentaAltaModificacion updateMode={true} />}
-                  />
+                  <Route path="create" element={<VentaAltaModificacion />} />
                 </Route>
 
                 <Route path="proveedor">
