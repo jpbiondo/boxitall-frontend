@@ -1,6 +1,18 @@
 // TODO: Conectar con el backend
 // TODO: Enlazar eliminar con metodo eliminar
-import { Button } from "@mui/material";
+import {
+  IconButton,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { useArticulo } from "../../hooks/useArticulo";
 import { useEffect, useState } from "react";
@@ -9,10 +21,10 @@ import type {
   ArticuloModeloIntervaloFijo,
   ArticuloModeloInventario,
   ArticuloModeloLoteFijo,
-  ArticuloProveedor,
 } from "../../types/domain/articulo/Articulo";
 import { DataGrid } from "@mui/x-data-grid";
 import type { ArticuloProveedorDataGrid } from "../../types/domain/articulo/ArticuloProveedor";
+import { Edit, Delete } from "@mui/icons-material";
 
 export function ArticuloConsulta() {
   const { articuloCod } = useParams();
@@ -34,6 +46,7 @@ export function ArticuloConsulta() {
       setArticulo(articulo);
       articulo?.modeloInventario ? setModInv(articulo.modeloInventario) : {};
       articulo?.articuloProveedores ? setArtProvsInfo() : {};
+      console.log(articulo);
     });
   }, [getArticuloById]);
 
@@ -119,62 +132,158 @@ export function ArticuloConsulta() {
     <div>
       {!isLoading && (
         <>
-          <h1>
-            {articuloCod} - {articulo.nombre}
-          </h1>
-          <div>
-            <Link to={`/articulo/update/${articuloCod}`}>
-              <Button variant="contained" color="primary">
-                Modificar
-              </Button>
-            </Link>
-            <Button variant="contained" color="error" onClick={handleDelete}>
-              Eliminar
-            </Button>
-          </div>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h2" marginBottom={2}>
+              Artículo #{articuloCod} {articulo.nombre}
+            </Typography>
+            <div>
+              <Link to={`/articulo/update/${articuloCod}`}>
+                <IconButton color="primary">
+                  <Edit />
+                </IconButton>
+              </Link>
+              <IconButton color="error" onClick={handleDelete}>
+                <Delete />
+              </IconButton>
+            </div>
+          </Stack>
+          <Typography variant="h3">Información base</Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Stock</Typography>
+                  </TableCell>
+                  <TableCell>{articulo.stock}</TableCell>
+                </TableRow>
 
-          <p>
-            Stock: <span>{articulo.stock}</span>
-          </p>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Descripción</Typography>
+                  </TableCell>
+                  <TableCell>{articulo.descripcion}</TableCell>
+                </TableRow>
 
-          <p>
-            Descripción: <span>{articulo.descripcion}</span>
-          </p>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">
+                      Costo de almacenamiento (anual)
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{articulo.costoAlmacenamiento}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Demanda (anual)</Typography>
+                  </TableCell>
+                  <TableCell>{articulo.demanda}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">
+                      Desviación estándar (anual)
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{articulo.desviacionEstandar}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Nivel de servicio</Typography>
+                  </TableCell>
+                  <TableCell>{articulo.nivelServicio}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-          <p>
-            Costo de costo de almacenamiento anual: $
-            <span>{articulo.costoAlmacenamiento}</span>
-          </p>
+          <Typography variant="h3">
+            Información de modelo de inventario
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Modelo Inventario</Typography>
+                  </TableCell>
+                  <TableCell>{modInv.nombre}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">
+                      Stock de seguridad
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{modInv.stockSeguridad}</TableCell>
+                </TableRow>
 
-          <p>
-            Demanda anual: <span> {articulo.demanda} </span>
-          </p>
+                {modInv.nombre == "Lote Fijo" ? (
+                  <TableRow>
+                    <TableCell>
+                      <Typography fontWeight="bold">Lote óptimo</Typography>
+                    </TableCell>
+                    <TableCell>{modInv.loteOptimo}</TableCell>
+                  </TableRow>
+                ) : (
+                  <TableRow>
+                    <TableCell>
+                      <Typography fontWeight="bold">
+                        Fecha próximo pedido
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{modInv.fechaProximoPedido}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-          <p>
-            Nivel de servicio: <span> {articulo.nivelServicio}</span>
-          </p>
-
-          <div>
-            <p>
-              Modelo Inventario: <span> {modInv.nombre} </span>
-            </p>
-            <div>{renderModeloInfo()}</div>
-          </div>
-
-          <p>Proveedor predeterminado: {renderProveedorPredInfo()}</p>
-
-          <div>
-            <p>Proveedores:</p>
-            {articulo.articuloProveedores != undefined ? (
-              <p>No hay proveedores</p>
-            ) : (
-              <DataGrid
-                columns={artProvColumns}
-                rows={artProvsRows}
-                getRowId={getRowId}
-              ></DataGrid>
-            )}
-          </div>
+          <Typography variant="h3">
+            Información de proveedor predeterminado
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Nombre</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Cargo de pedido</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de compra</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de pedido</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Demora de entrega</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Precio por unidad</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {articulo.articuloProveedores.map((artProv) => (
+                  <TableRow>
+                    <TableCell>{artProv.proveedor.proveedorNombre}</TableCell>
+                    <TableCell>{artProv.cargoPedido}</TableCell>
+                    <TableCell>{artProv.costoCompra}</TableCell>
+                    <TableCell>{artProv.costoPedido}</TableCell>
+                    <TableCell>{artProv.demoraEntrega}</TableCell>
+                    <TableCell>{artProv.precioUnitario}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       )}
     </div>
