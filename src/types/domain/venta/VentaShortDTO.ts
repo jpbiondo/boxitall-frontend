@@ -1,5 +1,4 @@
 export interface VentaShortDTO {
-  ventaCod: number;
+  id: number;
   ventaFecha: Date;
-  ventaTotal: number;
 }
