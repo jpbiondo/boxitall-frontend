@@ -10,7 +10,7 @@ export function useProveedor() {
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getProveedorShort = useCallback(async () => {
-    const response:  ProveedorList[] = await get(`${endpoint}/listAll`);
+    const response:  ProveedorList[] = await get(`${endpoint}`);
     return response;
   }, [get, endpoint]);
 
