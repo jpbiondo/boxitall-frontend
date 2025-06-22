@@ -64,7 +64,7 @@ export function ArticuloConsulta() {
           {common}
           <p>Fecha próximo pedido: {date.toUTCString()}</p>
           <p>Intervalo de pedido: {asMIF.intervaloPedido}</p>
-          <p>Inventario máximo: {asMIF.inventarioMax}</p>
+          <p>Inventario máximo: {asMIF.inventarioMaximo}</p>
         </>
       );
     }

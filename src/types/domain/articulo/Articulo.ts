@@ -13,7 +13,7 @@ export interface Articulo {
   proveedorPredeterminadoId: number | null;
   proveedorPredeterminadoNombre: string | null;
 
-  proveedores: ArticuloProveedor[];
+  articuloProveedores: ArticuloProveedor[];
 
   modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
   restanteProximoPedido: number;
@@ -41,5 +41,5 @@ export interface ArticuloModeloLoteFijo extends ArticuloModeloInventario {
 export interface ArticuloModeloIntervaloFijo extends ArticuloModeloInventario {
   fechaProximoPedido: Date;
   intervaloPedido: number;
-  inventarioMax: number;
+  inventarioMaximo: number;
 }

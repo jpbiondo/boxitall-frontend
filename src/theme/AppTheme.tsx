@@ -39,6 +39,13 @@ export default function AppTheme(props: AppThemeProps) {
             ...navigationCustomizations,
             ...surfacesCustomizations,
             ...themeComponents,
+            MuiTextField: {
+              defaultProps: {
+                InputLabelProps: {
+                  shrink: true,
+                },
+              },
+            },
           },
         });
   }, [disableCustomTheme, themeComponents]);
