@@ -41,5 +41,5 @@ export interface ArticuloModeloLoteFijo extends ArticuloModeloInventario {
 export interface ArticuloModeloIntervaloFijo extends ArticuloModeloInventario {
   fechaProximoPedido: Date;
   intervaloPedido: number;
-  inventarioMax: number;
+  inventarioMaximo: number;
 }

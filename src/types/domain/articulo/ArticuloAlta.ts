@@ -1,7 +1,6 @@
 import type { ArticuloProveedor } from "./Articulo";
 
 export interface ArticuloAlta {
-  id: number;
   nombre: string;
   descripcion: string;
   costoAlmacenamiento: number;
@@ -10,9 +9,9 @@ export interface ArticuloAlta {
   nivelServicio: number;
   stock: number;
 
-  proveedorPredeterminadoId: number | null;
+  provPredId: number | null;
 
-  articuloProveedores: ArticuloProveedorAlta[] | ArticuloProveedor[];
+  articuloProveedores: ArticuloProveedorAlta[];
 
   modeloInventario: ArticuloModeloInventarioAlta;
 }

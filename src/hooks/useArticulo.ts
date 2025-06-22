@@ -32,7 +32,7 @@ export function useArticulo() {
 
   const updateArticulo = useCallback(
     async (id: string, data: ArticuloAlta) => {
-      const response: Articulo = await put(`${endpoint}/${id}`, data);
+      const response: Articulo = await put(`${endpoint}/updateArticulo?id=${id}`, data);
       return response;
     },
     [put, endpoint]
@@ -40,7 +40,7 @@ export function useArticulo() {
 
   const deleteArticulo = useCallback(
     async (id: string) => {
-      const response: boolean = await del(`${endpoint}/${id}`);
+      const response: boolean = await del(`${endpoint}/bajaArticulo?id=${id}`);
       return response;
     },
     [del, endpoint]
