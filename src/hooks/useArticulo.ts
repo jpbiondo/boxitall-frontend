@@ -4,6 +4,7 @@ import type { Articulo } from "../types/domain/articulo/Articulo";
 import type { ArticuloList } from "../types/domain/articulo/ArticuloList";
 import { API_URL } from "../utils/constants";
 import type { ArticuloAlta } from "../types/domain/articulo/ArticuloAlta";
+import type { DTOArticuloGrupoProveedor } from "../types/domain/articulo/DTOArticuloGrupoProveedor";
 
 export function useArticulo() {
   const endpoint = `${API_URL}/articulo`;
@@ -45,6 +46,12 @@ export function useArticulo() {
     },
     [del, endpoint]
   );
+  const listarArticulosPorProveedor = useCallback(async () => {
+  const response: DTOArticuloGrupoProveedor[] = 
+    await get(`${API_URL}${endpoint}/listarPorProveedor`);
+  return response;
+}, [get, endpoint]);
+
 
   return {
     getArticulosShort,
@@ -54,5 +61,6 @@ export function useArticulo() {
     deleteArticulo,
     error,
     isLoading,
+    listarArticulosPorProveedor
   };
 }
