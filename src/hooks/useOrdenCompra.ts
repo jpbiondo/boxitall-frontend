@@ -12,7 +12,7 @@ export function useOrdenCompra() {
 
   const crearOrdenCompra = useCallback(
     async (ordenCompraDTO: DTOOrdenCompraAlta) => {
-      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO); // corregido "$" sobrante
+      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO); 
       return response;
     },
     [post]

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { useOrdenCompra } from "../../hooks/useOrdenCompra";
+import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 
-export function OrdenCompraConsulta() {
+
+  export function OrdenCompraConsulta() {
   const { ordenCompraCod } = useParams<{ ordenCompraCod: string }>();
   const {
     obtenerDetalleOrden,
@@ -14,26 +16,25 @@ export function OrdenCompraConsulta() {
     isLoading,
     error,
   } = useOrdenCompra();
-  const [detalleOrden, setDetalleOrden] = useState<any>(null);
+
+  const [detalleOrden, setDetalleOrden] = useState<DTOOrdenCompraObtenerDetalle | null>(null);
 
   useEffect(() => {
     if (ordenCompraCod) {
-      console.log("Llamando a obtenerDetalleOrden con ID:", ordenCompraCod);
-
       obtenerDetalleOrden(Number(ordenCompraCod))
-        .then((detalle) => {
-          console.log("Detalle recibido del backend:", detalle);
-          setDetalleOrden(detalle);
-        })
-        .catch((err) => console.error("Error al obtener detalle:", err));
-    } else {
-      console.warn("No hay ordenCompraCod en useParams");
+        .then(setDetalleOrden)
+        .catch(console.error);
     }
   }, [ordenCompraCod, obtenerDetalleOrden]);
 
+  if (isLoading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  if (!detalleOrden) return <p>Orden no encontrada.</p>;
+
+
   const handleAvanzarEstado = async () => {
     const confirmacion = window.confirm(
-      `¿Está seguro de avanzar el estado de la orden de ${detalleOrden.estado} al siguiente estado?`
+      `¿Está seguro de avanzar el estado de la orden de ${detalleOrden?.estado} al siguiente estado?`
     );
 
     if (confirmacion && ordenCompraCod) {
@@ -146,7 +147,7 @@ export function OrdenCompraConsulta() {
   return (
     <div>
       <Typography variant="h1">
-        Orden de Compra #{detalleOrden.idordenCompra}
+        Orden de Compra #{detalleOrden.IDOrdenCompra}
       </Typography>
       <div>
         {/* <Link to={`/orden-compra/update/${detalleOrden.IdordenCompra}`}>
@@ -156,7 +157,7 @@ export function OrdenCompraConsulta() {
         <Button
           variant="contained"
           color="error"
-          onClick={() => handleCancelar(detalleOrden.idordenCompra)}
+          onClick={() => handleCancelar(detalleOrden.IDOrdenCompra)}
           disabled={detalleOrden.estado !== "PENDIENTE"}
         >
           Cancelar Orden
@@ -175,7 +176,7 @@ export function OrdenCompraConsulta() {
       </Button>
 
       <p>
-        <strong>Proveedor:</strong> ({detalleOrden.nombreproveedor})
+        <strong>Proveedor:</strong> ({detalleOrden.nombreProveedor})
       </p>
 
       <h2>Artículos:</h2>

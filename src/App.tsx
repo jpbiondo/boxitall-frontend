@@ -18,6 +18,8 @@ import AppNavbar from "./components/AppNavbar";
 import SideMenu from "./components/SideMenu";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { AddOrden } from "./pages/orden-compra/AddOrden";
+import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
 
 function App() {
   return (
@@ -80,6 +82,10 @@ function App() {
                     path=":ordenCompraCod/detalle"
                     element={<OrdenCompraConsulta />}
                   />
+                 <Route path="seleccionar-articulo" element={<AddOrden />} />
+                  <Route path="nueva" element={<AddOrdenDetalle />} />
+
+
 
                   <Route
                     path="create"
