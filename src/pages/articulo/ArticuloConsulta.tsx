@@ -227,7 +227,7 @@ export function ArticuloConsulta() {
                     <TableCell>
                       <Typography fontWeight="bold">Lote óptimo</Typography>
                     </TableCell>
-                    <TableCell>{modInv.loteOptimo}</TableCell>
+                    <TableCell>{(modInv as ArticuloModeloLoteFijo).loteOptimo}</TableCell>
                   </TableRow>
                 ) : (
                   <TableRow>
@@ -236,7 +236,7 @@ export function ArticuloConsulta() {
                         Fecha próximo pedido
                       </Typography>
                     </TableCell>
-                    <TableCell>{modInv.fechaProximoPedido}</TableCell>
+                    <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toUTCString()}</TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -271,7 +271,7 @@ export function ArticuloConsulta() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {articulo.articuloProveedores.map((artProv) => (
+                {articulo.articuloProveedores?.map((artProv) => (
                   <TableRow>
                     <TableCell>{artProv.proveedor.proveedorNombre}</TableCell>
                     <TableCell>{artProv.cargoPedido}</TableCell>

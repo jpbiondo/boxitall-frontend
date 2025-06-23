@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Details, DetailsRounded, DisplaySettings, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -49,22 +49,24 @@ export const ArticuloListado = () => {
 
   const columns: GridColDef<any>[] = [
     { field: "id", headerName: "ID" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre", width: 200},
     { field: "stock", headerName: "Stock" },
     { field: "cgi", headerName: "CGI" },
 
     {
       field: "proveedorPredeterminadoId",
       headerName: "ID Prov (Pred)",
+      width: 150,
       renderCell: (params: any) => {
         return params.row.proveedorPredeterminadoId == "0"
-          ? "-"
-          : params.row.proveedorPredeterminadoId;
+        ? "-"
+        : params.row.proveedorPredeterminadoId;
       },
     },
     {
       field: "proveedorPredeterminadoNombre",
       headerName: "Nombre Prov (Pred)",
+      width: 170,
       renderCell: (params: any) => {
         return params.row.proveedorPredeterminadoNombre ==
           "Sin proveedor predeterminado"
@@ -102,7 +104,7 @@ export const ArticuloListado = () => {
     {
       field: "fechaProximoPedido",
       headerName: "Próximo pedido",
-      width: 100,
+      width: 200,
       renderCell: (params: any) => {
         return params.row.modeloInventario == "Intervalo Fijo"
           ? params.row.fechaProximoPedido
@@ -125,6 +127,7 @@ export const ArticuloListado = () => {
       headerName: "Acciones",
       filterable: false,
       sortable: false,
+      width: 140,
       renderCell: (params: any) => (
         <Stack direction="row" spacing={1}>
           <IconButton
@@ -140,6 +143,13 @@ export const ArticuloListado = () => {
             size="small"
           >
             <Delete />
+          </IconButton>
+          <IconButton
+            color="primary"
+            onClick={() => handleGetArticulo(params.row.id)}
+            size="small"
+          >
+            <DisplaySettings />
           </IconButton>
         </Stack>
       ),

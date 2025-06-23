@@ -14,6 +14,9 @@ import {
   TextField,
   Typography,
   Step,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Proveedor } from "../types/domain/proveedor/Proveedor";
@@ -38,18 +41,13 @@ export default function ArticuloForm({
   const { createArticulo, updateArticulo, error, isLoading, getArticuloById} = useArticulo();
   const [ articulo, setArticulo ] = useState<Articulo>();
   const { articuloCod } = useParams();
+  const [ provPred, setProvPred] = useState<number>(0)
+  const [ initialProvPred, setInitialProvPred] = useState<number>(0)
 
   // Recibe el art desde el local storage
   useEffect(()=>{
     updateMode?
     getArticuloById(articuloCod!).then((art) => {
-      // var newDate = "";
-      // if(art.modeloInventario.nombre == "Intervalo Fijo"){
-      //   const year = ((art.modeloInventario) as ArticuloModeloIntervaloFijo).fechaProximoPedido.getFullYear();
-      //   const mont = ((art.modeloInventario) as ArticuloModeloIntervaloFijo).fechaProximoPedido.getMonth();
-      //   const date = ((art.modeloInventario) as ArticuloModeloIntervaloFijo).fechaProximoPedido.getDate();
-      //   newDate = `${year}-${mont}-${date}`
-      // }
       setArticulo(art);
       reset(art);
     })
@@ -57,7 +55,8 @@ export default function ArticuloForm({
   }, []);
 
   useEffect (() =>{
-    
+    setInitialProvPred(articulo?.proveedorPredeterminadoId as number);
+    setProvPred(articulo?.proveedorPredeterminadoId as number);
   }, [articulo])
   
 
@@ -99,11 +98,9 @@ export default function ArticuloForm({
   };
 
   async function onSubmit(data: IFormValues) {
-    console.log(data);
-
     const altaArticulo: ArticuloAlta = {
       ...data,
-      provPredId: data.proveedorPredeterminadoId,
+      proveedorPredeterminadoId: provPred as number,
       articuloProveedores: data.articuloProveedores.map((artProv) => {
         const artAlta:ArticuloProveedorAlta = {
           ...artProv,
@@ -119,6 +116,7 @@ export default function ArticuloForm({
         inventarioMaximo: ((data.modeloInventario) as ArticuloModeloIntervaloFijo).inventarioMaximo,
       }
     }
+    console.log(altaArticulo);
 
     if (!articulo) {
       createArticulo(altaArticulo);
@@ -126,6 +124,14 @@ export default function ArticuloForm({
     }
 
     updateArticulo(String(articulo.id), altaArticulo);
+  }
+
+  const handleProvPred = (event:any , provPredId: string) =>{
+    setProvPred(parseInt(provPredId));
+  }
+
+  const handleResetProvPred = () => {
+    setProvPred(initialProvPred);
   }
 
   //   Handling ArticuloProveedor state
@@ -157,7 +163,6 @@ export default function ArticuloForm({
         gap={4}
         flexWrap="wrap"
         width="100%"
-        // why this shyt even broke?😭
         sx={{
           flexDirection: { xs: "column", md: "row" },
           justifyContent: { md: "space-between" },
@@ -322,6 +327,7 @@ export default function ArticuloForm({
               }}
             >
               <Typography variant="h3">Proveedores</Typography>
+              <Button onClick={() => handleResetProvPred()}> Resetear proveedor predeterminado</Button>
             </div>
 
             {/* Articulo Proveedor Fields */}
@@ -332,8 +338,13 @@ export default function ArticuloForm({
               artProveedores={fields.map(({ id, ...rest }) => rest)}
             />
             <Stack direction="column" spacing={2}>
+              <RadioGroup
+                aria-labelledby="provPredSelectionLabel"
+                onChange={handleProvPred}
+                name="provPredSelection"
+              >
               {fields.map((field, index) => (
-                <div>
+                <div id="field.proveedor.proveedorId">
                   <div
                     style={{
                       display: "flex",
@@ -348,6 +359,7 @@ export default function ArticuloForm({
                       {field.proveedor.proveedorNombre} - {}
                       {field.proveedor.proveedorTelefono}
                     </Typography>
+                    <FormControlLabel value={field.proveedor.proveedorId} control={<Radio checked={field.proveedor.proveedorId == provPred} />} label="Proveedor predeterminado" />
                     <IconButton
                       onClick={() => handleDeleteArtProveedor(index)}
                       color="error"
@@ -391,7 +403,7 @@ export default function ArticuloForm({
                   </div>
                 </div>
               ))}
-
+              </RadioGroup>
               <Button
                 onClick={handleClickAddProveedor}
                 color="primary"

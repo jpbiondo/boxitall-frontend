@@ -9,7 +9,7 @@ export interface ArticuloAlta {
   nivelServicio: number;
   stock: number;
 
-  provPredId: number | null;
+  proveedorPredeterminadoId: number | null;
 
   articuloProveedores: ArticuloProveedorAlta[];
 
