@@ -10,6 +10,8 @@ import {
 import type { ArticuloProveedor } from "../../types/domain/articulo/Articulo";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
+import { useProveedor } from "../../hooks/useProveedor";
+import { ProveedorList } from "../../types/domain/proveedor/ProveedorList";
 
 interface ArticuloAMProveedorPopupTableProps {
   onAddArtProveedor: (proveedor: Proveedor) => void;
@@ -40,16 +42,24 @@ export default function ArticuloAMProveedorPopupTable({
   setIsOpen,
 }: ArticuloAMProveedorPopupTableProps) {
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const { getProveedorShort } = useProveedor();
 
   useEffect(() => {
-    const provList = proveedoresMock.filter(
-      ({ proveedorCod }) =>
-        artProveedores.filter(
-          (artProv) => artProv.proveedor.proveedorCod === proveedorCod
-        ).length === 0
-    );
-    setProveedores(provList);
-  }, [artProveedores]);
+    // const provList = proveedoresMock.filter(
+    //   ({ proveedorCod }) =>
+    //     artProveedores.filter(
+    //       (artProv) => artProv.proveedor.proveedorCod === proveedorCod
+    //     ).length === 0
+    // );
+    getProveedorShort().then((provs) => {
+      provs.map((prov)=>{
+        setProveedores((prev)=>[ ...prev, {
+          ...prov,
+          proveedorId: prov.id,
+        }])
+      })
+    });
+  }, []);
 
   const handleAddArtProveedor = (proveedor: Proveedor) => {
     onAddArtProveedor(proveedor);
@@ -63,6 +73,7 @@ export default function ArticuloAMProveedorPopupTable({
 
   return (
     <Dialog open={open}>
+      <Button onClick={handleClose}> Cerrar </Button>
       <DialogTitle>Agregar proveedores para el artículo</DialogTitle>
       <DialogContent>
         <TableContainer>
