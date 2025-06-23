@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, Details, DetailsRounded, Edit } from "@mui/icons-material";
+import { Add, Delete, Details, DetailsRounded, DisplaySettings, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -149,7 +149,7 @@ export const ArticuloListado = () => {
             onClick={() => handleGetArticulo(params.row.id)}
             size="small"
           >
-            <Details />
+            <DisplaySettings />
           </IconButton>
         </Stack>
       ),
