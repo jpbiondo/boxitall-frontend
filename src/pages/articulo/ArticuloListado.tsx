@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, Details, DetailsRounded, DisplaySettings, Edit } from "@mui/icons-material";
+import { Add, Delete, DisplaySettings, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -21,7 +21,7 @@ export const ArticuloListado = () => {
     navigate(`/articulo/update/${articuloCod}`);
   };
 
-  const handleDeleteArticulo = async (articuloCod: number) => { // TODO - Mejor delete
+  const handleDeleteArticulo = async (articuloCod: number) => { // TODO - Está con alert, hacer mejor
     if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
       setDeleting(true);
       await deleteArticulo(articuloCod.toString());

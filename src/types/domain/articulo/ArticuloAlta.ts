@@ -1,5 +1,3 @@
-import type { ArticuloProveedor } from "./Articulo";
-
 export interface ArticuloAlta {
   nombre: string;
   descripcion: string;

@@ -11,7 +11,6 @@ import type { ArticuloProveedor } from "../../types/domain/articulo/Articulo";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
 import { useProveedor } from "../../hooks/useProveedor";
-import { ProveedorList } from "../../types/domain/proveedor/ProveedorList";
 
 interface ArticuloAMProveedorPopupTableProps {
   onAddArtProveedor: (proveedor: Proveedor) => void;

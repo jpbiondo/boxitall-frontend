@@ -244,7 +244,65 @@ export function ArticuloConsulta() {
           </TableContainer>
 
           <Typography variant="h3">
-            Información de proveedor predeterminado
+            CGI para el proveedor predeterminado
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">CGI</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de almacenamiento</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de compra</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de pedido</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>{articulo?.cgi?.cgiTotal}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoAlmacenamiento}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoCompra}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoPedido}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Typography variant="h3">
+            Proveedor predeterminado
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Id del proveedor</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Nombre del proveedor</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableCell>
+                  <Typography> { articulo.proveedorPredeterminadoId } </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography> { articulo.proveedorPredeterminadoNombre } </Typography>
+                </TableCell>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Typography variant="h3">
+            Información de los proveedores
           </Typography>
           <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
             <Table>

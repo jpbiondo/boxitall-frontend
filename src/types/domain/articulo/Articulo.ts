@@ -17,6 +17,8 @@ export interface Articulo {
 
   modeloInventario: ArticuloModeloLoteFijo | ArticuloModeloIntervaloFijo;
   restanteProximoPedido: number;
+
+  cgi: ArticuloCGI;
 }
 
 export interface ArticuloProveedor {
@@ -42,4 +44,11 @@ export interface ArticuloModeloIntervaloFijo extends ArticuloModeloInventario {
   fechaProximoPedido: Date;
   intervaloPedido: number;
   inventarioMaximo: number;
+}
+
+export interface ArticuloCGI{
+  cgiTotal: number,
+  costoCompra: number,
+  costoAlmacenamiento: number,
+  costoPedido: number,
 }
