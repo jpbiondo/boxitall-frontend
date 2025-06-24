@@ -11,7 +11,6 @@ import type { ArticuloProveedor } from "../../types/domain/articulo/Articulo";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
 import { useProveedor } from "../../hooks/useProveedor";
-import { ProveedorList } from "../../types/domain/proveedor/ProveedorList";
 
 interface ArticuloAMProveedorPopupTableProps {
   onAddArtProveedor: (proveedor: Proveedor) => void;
@@ -55,7 +54,7 @@ export default function ArticuloAMProveedorPopupTable({
       provs.map((prov)=>{
         setProveedores((prev)=>[ ...prev, {
           ...prov,
-          proveedorId: prov.id,
+          id: prov.id,
         }])
       })
     });
@@ -84,7 +83,7 @@ export default function ArticuloAMProveedorPopupTable({
             <TableCell></TableCell>
           </TableRow>
           {proveedores.map((proveedor) => (
-            <TableRow key={proveedor.proveedorCod}>
+            <TableRow key={proveedor.id}>
               <TableCell>{proveedor.proveedorCod}</TableCell>
               <TableCell>{proveedor.proveedorNombre}</TableCell>
               <TableCell>{proveedor.proveedorTelefono}</TableCell>
