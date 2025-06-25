@@ -10,13 +10,59 @@ export function useOrdenCompra() {
   const endpoint = "/orden-compra";
   const { get, post, put, del, error, isLoading } = useHttp();
 
-  const crearOrdenCompra = useCallback(
-    async (ordenCompraDTO: DTOOrdenCompraAlta) => {
-      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO); 
-      return response;
-    },
-    [post]
-  );
+const crearOrdenCompra = useCallback(
+  async (ordenCompraDTO: DTOOrdenCompraAlta): Promise<{
+    success: boolean;
+    parcial?: boolean;
+    mensaje: string;
+    orden?: DTOOrdenCompraObtenerDetalle;
+    errores?: string[];
+  }> => {
+    try {
+      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO);
+
+      // Asumimos que el backend responde con estos campos:
+      const { mensaje, orden, errores } = response as any;
+
+      // Si hay errores pero se devolvió orden, fue creada parcialmente
+      if (errores?.length > 0 && orden) {
+        return {
+          success: true,
+          parcial: true,
+          mensaje,
+          orden,
+          errores,
+        };
+      }
+
+      // Si fue creada sin errores
+      if (orden) {
+        return {
+          success: true,
+          mensaje,
+          orden,
+        };
+      }
+
+      // Fallback si no vino orden ni errores
+      return {
+        success: false,
+        mensaje: mensaje ?? "No se pudo crear la orden",
+        errores: errores ?? [],
+      };
+    } catch (e: any) {
+      const mensaje = e?.response?.data?.mensaje ?? "Error inesperado";
+      const errores = e?.response?.data?.errores ?? [e.message];
+      return {
+        success: false,
+        mensaje,
+        errores,
+      };
+    }
+  },
+  [post]
+);
+
 
   const cancelarOrdenCompra = useCallback(
     async (id: number) => {

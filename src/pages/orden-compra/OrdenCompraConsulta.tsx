@@ -1,24 +1,35 @@
 import { useEffect, useState } from "react";
 import { Button, Typography } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useOrdenCompra } from "../../hooks/useOrdenCompra";
 import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
+import type { DTOOrdenCompraArticuloAlta } from "../../types/domain/orden-compra/DTOOrdenCompraArticuloAlta";
 
-
-  export function OrdenCompraConsulta() {
+export function OrdenCompraConsulta() {
   const { ordenCompraCod } = useParams<{ ordenCompraCod: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     obtenerDetalleOrden,
     eliminarDetalleOrden,
     actualizarCantidadDetalle,
     cancelarOrdenCompra,
     avanzarEstadoOrden,
+    agregarArticuloAOrden,
     isLoading,
     error,
   } = useOrdenCompra();
 
   const [detalleOrden, setDetalleOrden] = useState<DTOOrdenCompraObtenerDetalle | null>(null);
+  const [avisos, setAvisos] = useState<string[]>([]);
 
+  const state = location.state as {
+  articuloParaAgregar?: DTOOrdenCompraArticuloAlta;
+};
+
+
+  // Cargar orden por ID
   useEffect(() => {
     if (ordenCompraCod) {
       obtenerDetalleOrden(Number(ordenCompraCod))
@@ -27,42 +38,71 @@ import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-comp
     }
   }, [ordenCompraCod, obtenerDetalleOrden]);
 
-  if (isLoading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (!detalleOrden) return <p>Orden no encontrada.</p>;
-
-
-  const handleAvanzarEstado = async () => {
-    const confirmacion = window.confirm(
-      `¿Está seguro de avanzar el estado de la orden de ${detalleOrden?.estado} al siguiente estado?`
-    );
-
-    if (confirmacion && ordenCompraCod) {
+ useEffect(() => {
+  const agregarArticuloSiVino = async () => {
+    if (state?.articuloParaAgregar && ordenCompraCod) {
       try {
-        const mensajes = await avanzarEstadoOrden(Number(ordenCompraCod));
-        setAvisos(mensajes);
-
-        // Recargar los datos de la orden
-        const detalleActualizado = await obtenerDetalleOrden(
-          Number(ordenCompraCod)
+        await agregarArticuloAOrden(
+          Number(ordenCompraCod),
+          state.articuloParaAgregar
         );
+
+        // Recargar detalle si querés mostrar actualizado
+        const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
         setDetalleOrden(detalleActualizado);
 
-        if (mensajes.length > 0) {
-          alert(`Orden avanzada de estado. Avisos:\n${mensajes.join("\n")}`);
-        } else {
-          alert("Estado de la orden avanzado correctamente");
-        }
-      } catch (err) {
-        console.error("Error al avanzar estado:", err);
-        alert("No se pudo avanzar el estado: " + (err as Error).message);
+      } catch (error) {
+        console.error("Error al agregar artículo:", error);
+        alert("Ocurrió un error al agregar el artículo.");
+      } finally {
+        // Navegar igual al detalle (recargando el estado para limpiar state.articuloParaAgregar)
+        navigate(`/orden-compra/${ordenCompraCod}/detalle`, { replace: true });
       }
     }
   };
 
-  // Función para determinar el próximo estado
-  const getProximoEstado = (estadoActual: string): string => {
-    switch (estadoActual) {
+  agregarArticuloSiVino();
+}, [state?.articuloParaAgregar, ordenCompraCod]);
+
+  // Cancelar orden
+  const handleCancelar = async (idOrden: number) => {
+    const confirmacion = window.confirm("¿Está seguro de cancelar esta orden?");
+    if (confirmacion && ordenCompraCod) {
+      await cancelarOrdenCompra(idOrden);
+      const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+      setDetalleOrden(detalleActualizado);
+    }
+  };
+
+  // Avanzar estado de la orden
+  const handleAvanzarEstado = async () => {
+    if (!detalleOrden || !ordenCompraCod) return;
+
+    const confirmacion = window.confirm(
+      `¿Avanzar el estado de la orden de ${detalleOrden.estado}?`
+    );
+    if (confirmacion) {
+      try {
+        const mensajes = await avanzarEstadoOrden(Number(ordenCompraCod));
+        setAvisos(mensajes);
+
+        const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+        setDetalleOrden(detalleActualizado);
+
+        alert(
+          mensajes.length > 0
+            ? `Orden avanzada con avisos:\n${mensajes.join("\n")}`
+            : "Orden avanzada correctamente"
+        );
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo avanzar el estado.");
+      }
+    }
+  };
+
+  const getProximoEstado = (estado: string) => {
+    switch (estado) {
       case "PENDIENTE":
         return "ENVIAR";
       case "ENVIADA":
@@ -72,132 +112,94 @@ import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-comp
     }
   };
 
-  const handleCancelar = async (idOrden: number) => {
-    const confirmacion = window.confirm(
-      "¿Está seguro de cancelar esta orden? Esta acción modificará el estado de su orden de compra."
-    );
-    if (confirmacion && ordenCompraCod) {
-      await cancelarOrdenCompra(idOrden);
-      // Recargar datos
-      const detalleActualizado = await obtenerDetalleOrden(
-        Number(ordenCompraCod)
-      );
-      setDetalleOrden(detalleActualizado);
-    }
+  const handleAgregarArticulo = (orden: DTOOrdenCompraObtenerDetalle) => {
+    navigate(`/orden-compra/agregar-articulo`, {
+      state: { orden },
+    });
   };
 
   const handleEliminar = async (idDetalle: number) => {
-    const confirmacion = window.confirm(
-      "¿Está seguro de eliminar este artículo? Esta acción modificará la orden de compra."
-    );
-    if (confirmacion && ordenCompraCod) {
+    if (!ordenCompraCod) return;
+    const confirmacion = window.confirm("¿Eliminar este artículo?");
+    if (confirmacion) {
       await eliminarDetalleOrden(Number(ordenCompraCod), idDetalle);
-      // Recargar datos
-      const detalleActualizado = await obtenerDetalleOrden(
-        Number(ordenCompraCod)
-      );
+      const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
       setDetalleOrden(detalleActualizado);
     }
   };
 
-  const handleModificarCantidad = async (
-    idDetalle: number,
-    cantidadActual: number
-  ) => {
-    const nuevaCantidad = window.prompt(
-      "Ingrese la nueva cantidad:",
-      cantidadActual.toString()
-    );
-    if (nuevaCantidad !== null && ordenCompraCod) {
-      const confirmacion = window.confirm(
-        "¿Está seguro de modificar la cantidad? Esto cambiará la orden de compra."
-      );
+  const handleModificarCantidad = async (idDetalle: number, cantidadActual: number) => {
+    const nuevaCantidadStr = window.prompt("Nueva cantidad:", cantidadActual.toString());
+    if (nuevaCantidadStr && ordenCompraCod) {
+      const confirmacion = window.confirm("¿Modificar la cantidad?");
       if (confirmacion) {
-        try {
-          const response = await actualizarCantidadDetalle(
-            Number(ordenCompraCod),
-            idDetalle,
-            Number(nuevaCantidad)
-          );
-          console.log("Respuesta de actualizarCantidadDetalle:", response);
-
-          // Recargar datos:
-          const detalleActualizado = await obtenerDetalleOrden(
-            Number(ordenCompraCod)
-          );
-          setDetalleOrden(detalleActualizado);
-        } catch (error) {
-          console.error("Error al actualizar cantidad:", error);
-        }
+        const nuevaCantidad = Number(nuevaCantidadStr);
+        await actualizarCantidadDetalle(Number(ordenCompraCod), idDetalle, nuevaCantidad);
+        const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+        setDetalleOrden(detalleActualizado);
       }
     }
   };
 
-  if (isLoading) return <p>Cargando detalle de orden...</p>;
+  if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (!detalleOrden) return <p>No se encontró la orden.</p>;
 
   const total = detalleOrden.detalleArticulos?.reduce(
-    (acc: number, articulo: any) => {
-      return acc + articulo.cantidad * articulo.precio;
-    },
+    (acc, articulo) => acc + articulo.cantidad * articulo.precio,
     0
   );
 
   return (
     <div>
-      <Typography variant="h1">
-        Orden de Compra #{detalleOrden.IDOrdenCompra}
+      <Typography variant="h4">
+        Orden de Compra #{detalleOrden.idordenCompra}
       </Typography>
-      <div>
-        {/* <Link to={`/orden-compra/update/${detalleOrden.IdordenCompra}`}>
-          <Button variant="contained" color="primary"
-          >Modificar</Button>
-        </Link> */}
+
+      <div style={{ margin: "10px 0" }}>
         <Button
           variant="contained"
           color="error"
-          onClick={() => handleCancelar(detalleOrden.IDOrdenCompra)}
+          onClick={() => handleCancelar(detalleOrden.idordenCompra)}
           disabled={detalleOrden.estado !== "PENDIENTE"}
+          style={{ marginRight: "5px" }}
         >
           Cancelar Orden
         </Button>
+
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleAvanzarEstado}
+          disabled={detalleOrden.estado === "FINALIZADA" || detalleOrden.estado === "CANCELADA"}
+          style={{ marginRight: "5px" }}
+        >
+          {getProximoEstado(detalleOrden.estado)}
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={() => handleAgregarArticulo(detalleOrden)}
+          disabled={detalleOrden.estado !== "PENDIENTE"}
+          style={{ marginRight: "5px" }}
+        >
+          Agregar Artículo
+        </Button>
       </div>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={handleAvanzarEstado}
-        disabled={
-          detalleOrden.estado === "FINALIZADA" ||
-          detalleOrden.estado === "CANCELADA"
-        }
-      >
-        {getProximoEstado(detalleOrden.estado)}
-      </Button>
 
-      <p>
-        <strong>Proveedor:</strong> ({detalleOrden.nombreProveedor})
-      </p>
+      <p><strong>Proveedor:</strong> {detalleOrden.nombreproveedor}</p>
 
-      <h2>Artículos:</h2>
+      <h2>Artículos</h2>
       <ul>
-        {detalleOrden.detalleArticulos?.map((articulo: any) => (
-          <li key={articulo.idarticulo}>
-            Renglón: {articulo.renglon} - {articulo.nombreArticulo} |
-            Cantidad(tamaño de lote:{articulo.loteoptimo}): {articulo.cantidad}{" "}
-            | Precio: ${articulo.precio}
+        {detalleOrden.detalleArticulos?.map((art) => (
+          <li key={art.idarticulo}>
+            Renglón: {art.renglon} - {art.nombreArticulo} | Cantidad: {art.cantidad} | Precio: ${art.precio}
             <div style={{ display: "inline", marginLeft: "10px" }}>
               <Button
                 variant="outlined"
-                color="primary"
                 size="small"
                 disabled={detalleOrden.estado !== "PENDIENTE"}
-                onClick={() =>
-                  handleModificarCantidad(
-                    articulo.idOCarticulo,
-                    articulo.cantidad
-                  )
-                }
+                onClick={() => handleModificarCantidad(art.idOCarticulo, art.cantidad)}
                 style={{ marginRight: "5px" }}
               >
                 Modificar
@@ -207,7 +209,7 @@ import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-comp
                 color="error"
                 size="small"
                 disabled={detalleOrden.estado !== "PENDIENTE"}
-                onClick={() => handleEliminar(articulo.idOCarticulo)}
+                onClick={() => handleEliminar(art.idOCarticulo)}
               >
                 Eliminar
               </Button>
@@ -216,12 +218,8 @@ import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-comp
         ))}
       </ul>
 
-      <p>
-        <strong>Estado:</strong> {detalleOrden.estado}
-      </p>
-      <p>
-        <strong>Total:</strong> ${total?.toFixed(2)}
-      </p>
+      <p><strong>Estado:</strong> {detalleOrden.estado}</p>
+      <p><strong>Total:</strong> ${total?.toFixed(2)}</p>
     </div>
   );
 }

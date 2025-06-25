@@ -20,6 +20,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
+import { OrdenCompraConsultaAddItem } from "./pages/orden-compra/OrdenCompraConsultaAddItem";
 
 function App() {
   return (
@@ -84,6 +85,7 @@ function App() {
                   />
                  <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
+                  <Route path="agregar-articulo" element={<OrdenCompraConsultaAddItem />} />
 
 
 

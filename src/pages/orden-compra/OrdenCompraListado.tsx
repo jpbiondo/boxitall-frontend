@@ -74,7 +74,7 @@ export const OrdenCompraListado = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate("/orden-compra/create")}
+          onClick={() => navigate("/orden-compra/seleccionar-articulo")}
           startIcon={<Add />}
         >
           Crear orden de compra
