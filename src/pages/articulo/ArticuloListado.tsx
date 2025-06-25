@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, DisplaySettings, Edit } from "@mui/icons-material";
+import { Add, Delete, DisplaySettings, Edit, Redo } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -167,14 +167,24 @@ export const ArticuloListado = () => {
         marginBottom={2}
       >
         <Typography variant="h2">Artículos</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/articulo/create")}
-          startIcon={<Add />}
-        >
-          Crear articulo
-        </Button>
+        <Stack spacing={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/articulo/create")}
+            startIcon={<Add />}
+          >
+            Crear articulo
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => navigate("/articulo/bajados")}
+            startIcon={<Redo />}
+          >
+            Ir a artículos de baja
+          </Button>
+        </Stack>
       </Stack>
       {/* TODO: DATA GRID EACH COLUMNS SHOULD BE FULLY SHOWN IN WIDTH */}
       <DataGrid

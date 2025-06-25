@@ -16,7 +16,6 @@ export function ProductosReponer(){
                 fechaProximoPedido: new Date(articulo.fechaProximoPedido).toUTCString()
             }
           )));
-          console.log(articulos);
         });
     }, [listarArticulosReponer] );
 
