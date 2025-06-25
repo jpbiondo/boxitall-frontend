@@ -18,7 +18,6 @@ export const ArticuloBajados = () => {
         const date: Date = new Date(articulo.fechaBaja);
         articulo.fechaBaja = date.toUTCString();
       });
-      console.log(articulos);
       setArticulos(articulos);
     });
   }, [getArticulosBajados]);

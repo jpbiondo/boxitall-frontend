@@ -32,7 +32,7 @@ const MOCK_PROVEEDORES: DTOArticuloGrupoProveedor[] = [
         esProveedorPredeterminado: true,
       },
       {
-        idArticulo: 102,
+        idArticulo: 2,
         nombreArticulo: "Arandela Metálica",
         precioProveedor: 12.75,
         loteOptimo: 20,

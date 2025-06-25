@@ -1,9 +1,9 @@
 import type { DTOOrdenCompraArticuloObtenerDetalle } from "./DTOOrdenCompraArticuloObtenerDetalle";
 
 export interface DTOOrdenCompraObtenerDetalle {
-  IDOrdenCompra: number;
+  idordenCompra: number;
   detalleArticulos: DTOOrdenCompraArticuloObtenerDetalle[];
   estado: string;
   idproveedor:number;
-  nombreProveedor:string;
+  nombreproveedor:string;
 }

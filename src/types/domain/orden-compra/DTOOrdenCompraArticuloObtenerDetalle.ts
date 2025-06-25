@@ -1,5 +1,5 @@
 export interface DTOOrdenCompraArticuloObtenerDetalle {
-  IDarticulo: number;
+  idarticulo: number;
   renglon: number;
   nombreArticulo: string;
   cantidad: number;

@@ -22,6 +22,7 @@ import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
 import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
 import { ProductosReponer } from "./pages/listas/ProductosReponer";
+import { OrdenCompraConsultaAddItem } from "./pages/orden-compra/OrdenCompraConsultaAddItem";
 import { ArticuloBajados } from "./pages/articulo/ArticuloBajados";
 
 function App() {
@@ -89,6 +90,7 @@ function App() {
                   />
                  <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
+                  <Route path="agregar-articulo" element={<OrdenCompraConsultaAddItem />} />
 
 
 
