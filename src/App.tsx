@@ -22,6 +22,7 @@ import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
 import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
 import { ProductosReponer } from "./pages/listas/ProductosReponer";
+import { ArticuloBajados } from "./pages/articulo/ArticuloBajados";
 
 function App() {
   return (
@@ -63,6 +64,8 @@ function App() {
 
                 <Route path="articulo">
                   <Route index element={<ArticuloListado />} />
+                  
+                  <Route path="bajados" element={<ArticuloBajados />} />
 
                   <Route
                     path="create"
