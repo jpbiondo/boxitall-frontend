@@ -22,6 +22,7 @@ import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
 import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
 import { ProductosReponer } from "./pages/listas/ProductosReponer";
+import { OrdenCompraConsultaAddItem } from "./pages/orden-compra/OrdenCompraConsultaAddItem";
 
 function App() {
   return (
@@ -86,6 +87,7 @@ function App() {
                   />
                  <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
+                  <Route path="agregar-articulo" element={<OrdenCompraConsultaAddItem />} />
 
 
 
