@@ -11,7 +11,7 @@ import { VentaConsulta } from "./pages/venta/VentaConsulta";
 import { VentaAltaModificacion } from "./pages/venta/VentaAltaModificacion";
 import { ProveedorListado } from "./pages/proveedor/ProveedorListado";
 import { ProveedorConsulta } from "./pages/proveedor/ProveedorConsulta";
-import { ProveedorAltaModificacion } from "./pages/proveedor/ProveedorAltaModificacion";
+import { ProveedorAlta } from "./pages/proveedor/ProveedorAlta";
 import AppTheme from "./theme/AppTheme";
 import { alpha, Box, CssBaseline, Stack } from "@mui/material";
 import AppNavbar from "./components/AppNavbar";
@@ -20,6 +20,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
+import { ProveedorModificacion } from "./pages/proveedor/ProveedorModificacion";
 
 function App() {
   return (
@@ -82,10 +83,8 @@ function App() {
                     path=":ordenCompraCod/detalle"
                     element={<OrdenCompraConsulta />}
                   />
-                 <Route path="seleccionar-articulo" element={<AddOrden />} />
+                  <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
-
-
 
                   <Route
                     path="create"
@@ -111,13 +110,10 @@ function App() {
 
                   <Route path=":proveedorCod" element={<ProveedorConsulta />} />
 
-                  <Route
-                    path="create"
-                    element={<ProveedorAltaModificacion updateMode={false} />}
-                  />
+                  <Route path="create" element={<ProveedorAlta />} />
                   <Route
                     path="update/:proveedorCod"
-                    element={<ProveedorAltaModificacion updateMode={true} />}
+                    element={<ProveedorModificacion />}
                   />
                 </Route>
               </Routes>
