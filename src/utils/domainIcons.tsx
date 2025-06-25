@@ -3,6 +3,8 @@ import {
   ShoppingCartOutlined,
   BookmarkBorderOutlined,
   AnalyticsOutlined,
+  InventoryOutlined,
+  ProductionQuantityLimitsOutlined,
 } from "@mui/icons-material";
 export const ICON_SIZE = 32;
 
@@ -18,3 +20,7 @@ export const getOrderSaleIcon = (size?: number) =>
   createIcon(BookmarkBorderOutlined, size);
 export const getSaleIcon = (size?: number) =>
   createIcon(ShoppingCartOutlined, size);
+export const getProductCautionIcon = (size?: number) =>
+  createIcon(ProductionQuantityLimitsOutlined, size);
+export const getInventoryIcon = (size?: number) =>
+  createIcon(InventoryOutlined, size);

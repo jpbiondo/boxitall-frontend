@@ -47,13 +47,14 @@ export function useArticulo() {
     },
     [del, endpoint]
   );
+  
   const listarArticulosPorProveedor = useCallback(async () => {
   const response: DTOArticuloGrupoProveedor[] = 
     await get(`${API_URL}${endpoint}/listarPorProveedor`);
   return response;
 }, [get, endpoint]);
-
-  const listarArticulosPorProveedorId = useCallback(
+    
+const listarArticulosPorProveedorId = useCallback(
     async (proveedorId: number): Promise<DTOArticuloProveedorListado[]> => {
       const response = await get(`${API_URL}${endpoint}/listarPorProveedorId/${proveedorId}`);
       return response;

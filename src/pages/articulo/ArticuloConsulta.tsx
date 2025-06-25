@@ -13,7 +13,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useArticulo } from "../../hooks/useArticulo";
 import { useEffect, useState } from "react";
 import type {
@@ -28,7 +28,7 @@ import { Edit, Delete } from "@mui/icons-material";
 
 export function ArticuloConsulta() {
   const { articuloCod } = useParams();
-  const { isLoading, getArticuloById } = useArticulo();
+  const { isLoading, getArticuloById, deleteArticulo } = useArticulo();
   const [articulo, setArticulo] = useState<Articulo>(new Object() as Articulo);
   const [modInv, setModInv] = useState<ArticuloModeloInventario>(
     new Object() as ArticuloModeloInventario
@@ -36,9 +36,19 @@ export function ArticuloConsulta() {
   const [artProvsRows, setArtProvRows] = useState<ArticuloProveedorDataGrid[]>(
     []
   );
+  const navigate = useNavigate();
 
-  const handleDelete = () => {
-    console.log("Eliminar artículo", articuloCod);
+  const handleDelete = async () => {
+    if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
+      await deleteArticulo(articulo.id.toString()).then(
+        () =>{
+          alert("Artículo dado de baja exitosamente")
+          navigate("/articulo")
+          // TODO - navigate a artículos?
+        },
+        () => alert("Ha ocurrido un error dando de baja al artículo")
+      );
+    }
   };
 
   useEffect(() => {
@@ -46,7 +56,6 @@ export function ArticuloConsulta() {
       setArticulo(articulo);
       articulo?.modeloInventario ? setModInv(articulo.modeloInventario) : {};
       articulo?.articuloProveedores ? setArtProvsInfo() : {};
-      console.log(articulo);
     });
   }, [getArticuloById]);
 
@@ -96,7 +105,7 @@ export function ArticuloConsulta() {
     if (articulo.articuloProveedores != undefined)
       articulo.articuloProveedores.forEach((artProv) => {
         const artProvGrid: ArticuloProveedorDataGrid = {
-          proveedorId: artProv.proveedor.proveedorId,
+          proveedorId: artProv.proveedor.id,
           proveedorCod: artProv.proveedor.proveedorCod,
           proveedorNombre: artProv.proveedor.proveedorNombre,
           proveedorTelefono: artProv.proveedor.proveedorTelefono,
@@ -244,7 +253,65 @@ export function ArticuloConsulta() {
           </TableContainer>
 
           <Typography variant="h3">
-            Información de proveedor predeterminado
+            CGI para el proveedor predeterminado
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">CGI</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de almacenamiento</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de compra</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Costo de pedido</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>{articulo?.cgi?.cgiTotal}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoAlmacenamiento}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoCompra}</TableCell>
+                  <TableCell>{articulo?.cgi?.costoPedido}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Typography variant="h3">
+            Proveedor predeterminado
+          </Typography>
+          <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography fontWeight="bold">Id del proveedor</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography fontWeight="bold">Nombre del proveedor</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableCell>
+                  <Typography> { articulo.proveedorPredeterminadoId } </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography> { articulo.proveedorPredeterminadoNombre } </Typography>
+                </TableCell>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Typography variant="h3">
+            Información de los proveedores
           </Typography>
           <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
             <Table>

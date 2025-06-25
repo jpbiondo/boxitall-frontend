@@ -43,6 +43,7 @@ export default function ArticuloForm({
   const { articuloCod } = useParams();
   const [ provPred, setProvPred] = useState<number>(0)
   const [ initialProvPred, setInitialProvPred] = useState<number>(0)
+  const navigate = useNavigate();
 
   // Recibe el art desde el local storage
   useEffect(()=>{
@@ -104,7 +105,7 @@ export default function ArticuloForm({
       articuloProveedores: data.articuloProveedores.map((artProv) => {
         const artAlta:ArticuloProveedorAlta = {
           ...artProv,
-          proveedorId: artProv.proveedor.proveedorId,
+          proveedorId: artProv.proveedor.id,
           articuloId: data.id
         }
         return artAlta
@@ -116,14 +117,27 @@ export default function ArticuloForm({
         inventarioMaximo: ((data.modeloInventario) as ArticuloModeloIntervaloFijo).inventarioMaximo,
       }
     }
-    console.log(altaArticulo);
 
     if (!articulo) {
-      createArticulo(altaArticulo);
+      createArticulo(altaArticulo).then(
+        () => {
+          alert("Artículo creado exitosamente")
+          navigate(`/articulo`)
+        },
+        ( msg ) => {
+          alert(`El artículo no pudo ser creado`)
+        }
+      );
       return;
     }
-
-    updateArticulo(String(articulo.id), altaArticulo);
+    
+    updateArticulo(String(articulo.id), altaArticulo).then(
+      () => {
+        alert(`Artículo actualizado exitosamente`)
+        navigate(`/articulo`)
+      },
+      ( msg ) => { alert(`El artículo no pudo ser actualizado`); console.log(articulo); }
+    );
   }
 
   const handleProvPred = (event:any , provPredId: string) =>{
@@ -335,7 +349,7 @@ export default function ArticuloForm({
               open={openProveedoresPopUp}
               setIsOpen={setOpenProveedoresPopUp}
               onAddArtProveedor={onAddArtProveedor}
-              artProveedores={fields.map(({ id, ...rest }) => rest)}
+              artProveedores={fields}
             />
             <Stack direction="column" spacing={2}>
               <RadioGroup
@@ -344,7 +358,7 @@ export default function ArticuloForm({
                 name="provPredSelection"
               >
               {fields.map((field, index) => (
-                <div id="field.proveedor.proveedorId">
+                <div id="field.proveedor.id">
                   <div
                     style={{
                       display: "flex",
@@ -355,11 +369,15 @@ export default function ArticuloForm({
                     }}
                   >
                     <Typography variant="h6" fontWeight={500}>
-                      {"Id"} {field.proveedor.proveedorId} - {}
+                      {"Id"} {field.proveedor.id} - {}
                       {field.proveedor.proveedorNombre} - {}
                       {field.proveedor.proveedorTelefono}
                     </Typography>
-                    <FormControlLabel value={field.proveedor.proveedorId} control={<Radio checked={field.proveedor.proveedorId == provPred} />} label="Proveedor predeterminado" />
+                    <FormControlLabel 
+                      value={field.proveedor.id}
+                      control={<Radio checked={field.proveedor.id == provPred} />}
+                      label="Proveedor predeterminado"
+                    />
                     <IconButton
                       onClick={() => handleDeleteArtProveedor(index)}
                       color="error"
