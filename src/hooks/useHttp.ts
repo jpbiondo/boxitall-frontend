@@ -5,18 +5,21 @@ class HttpError extends Error {
   status: number;
   statusText: string;
   url: string;
+  response?: Response;
 
   constructor(
     message: string,
     status: number,
     statusText: string,
-    url: string
+    url: string,
+    response?: Response
   ) {
     super(message);
     this.name = "HttpError";
     this.status = status;
     this.statusText = statusText;
     this.url = url;
+    this.response = response;
   }
 }
 
@@ -62,7 +65,8 @@ export function useHttp() {
             errorMessage,
             response.status,
             response.statusText,
-            url
+            url,
+            response
           );
 
           // Centralized error handling (logging, etc.)
