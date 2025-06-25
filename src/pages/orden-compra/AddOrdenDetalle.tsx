@@ -90,26 +90,37 @@ export function AddOrdenDetalle() {
     });
   };
 
-  const handleGuardarOrden = async () => {
-    if (!detalleOrden) return;
+ const handleGuardarOrden = async () => {
+  if (!detalleOrden) return;
 
-    const dto: DTOOrdenCompraAlta = {
-      IDProveedor: detalleOrden.idproveedor,
-      detallesarticulo: detalleOrden.detalleArticulos.map((art) => ({
-        IDarticulo: art.IDarticulo,
-        cantidad: art.cantidad,
-      })),
-    };
-
-    try {
-      await crearOrdenCompra(dto);
-      alert("Orden creada con éxito");
-      navigate("/orden-compra");
-    } catch (error) {
-      console.error("Error al crear orden:", error);
-      alert("Hubo un error al crear la orden.");
-    }
+  const dto: DTOOrdenCompraAlta = {
+    detallesarticulo: detalleOrden.detalleArticulos.map((art) => ({
+      IDarticulo: art.IDarticulo,
+      cantidad: art.cantidad,
+    })),
+    IDProveedor: detalleOrden.idproveedor,
   };
+
+  const resultado = await crearOrdenCompra(dto);
+
+  if (resultado.success && resultado.parcial) {
+
+   console.log("Resultado creación orden:", resultado);
+
+    alert(
+      `Orden creada con advertencias:\n\n${resultado.errores?.join("\n")}`
+    );
+    navigate("/orden-compra");
+  } else if (resultado.success) {
+    alert("Orden creada con éxito.");
+    navigate("/orden-compra");
+  } else {
+    alert(
+      `No se pudo crear la orden:\n\n${resultado.errores?.join("\n") ?? resultado.mensaje}`
+    );
+  }
+};
+
 
   if (!detalleOrden) return <p>Cargando nueva orden...</p>;
 

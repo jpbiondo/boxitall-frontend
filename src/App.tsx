@@ -21,6 +21,10 @@ import Footer from "./components/Footer";
 import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
 import { ProveedorModificacion } from "./pages/proveedor/ProveedorModificacion";
+import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
+import { ProductosReponer } from "./pages/listas/ProductosReponer";
+import { OrdenCompraConsultaAddItem } from "./pages/orden-compra/OrdenCompraConsultaAddItem";
+import { ArticuloBajados } from "./pages/articulo/ArticuloBajados";
 
 function App() {
   return (
@@ -62,6 +66,8 @@ function App() {
 
                 <Route path="articulo">
                   <Route index element={<ArticuloListado />} />
+                  
+                  <Route path="bajados" element={<ArticuloBajados />} />
 
                   <Route
                     path="create"
@@ -85,6 +91,7 @@ function App() {
                   />
                   <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
+                  <Route path="agregar-articulo" element={<OrdenCompraConsultaAddItem />} />
 
                   <Route
                     path="create"
@@ -115,6 +122,14 @@ function App() {
                     path="update/:proveedorCod"
                     element={<ProveedorModificacion />}
                   />
+                </Route>
+
+                <Route path="listados">
+                  {/* Los comentados ya están dentro de otra parte */}
+                  {/* <Route path="provsPorArt" element={<ProvsPorArt/>}></Route> */}
+                  {/* <Route path="artsPorProv"></Route> */}
+                  <Route path="faltantes" element={<ProductosFaltantes/>}></Route>
+                  <Route path="reponer" element={<ProductosReponer/>}></Route>
                 </Route>
               </Routes>
             </Box>

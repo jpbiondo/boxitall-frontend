@@ -12,6 +12,8 @@ import {
   getOrderSaleIcon,
   getProviderIcon,
   getSaleIcon,
+  getInventoryIcon,
+  getProductCautionIcon
 } from "../utils/domainIcons";
 
 const mainListItems = [
@@ -24,6 +26,8 @@ const mainListItems = [
     path: "/orden-compra",
   },
   { text: "Ventas", icon: getSaleIcon(), path: "/venta" },
+  { text: "Artículos a reponer", icon: getInventoryIcon(), path:"/listados/reponer" },
+  { text: "Artículos faltantes", icon: getProductCautionIcon(), path:"/listados/faltantes" }
 ];
 
 const secondaryListItems = [

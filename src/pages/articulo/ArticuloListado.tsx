@@ -3,7 +3,7 @@ import { useArticulo } from "../../hooks/useArticulo";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import { Button, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { Add, Delete, Details, DetailsRounded, DisplaySettings, Edit } from "@mui/icons-material";
+import { Add, Delete, DisplaySettings, Edit, Redo } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import type { ArticuloList } from "../../types/domain/articulo/ArticuloList";
 
@@ -21,12 +21,14 @@ export const ArticuloListado = () => {
     navigate(`/articulo/update/${articuloCod}`);
   };
 
-  const handleDeleteArticulo = async (articuloCod: number) => { // TODO - Mejor delete
+  const handleDeleteArticulo = async (articuloCod: number) => { // TODO - Está con alert, hacer mejor
     if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
       setDeleting(true);
-      await deleteArticulo(articuloCod.toString());
+      await deleteArticulo(articuloCod.toString()).then(
+        () => alert("Artículo dado de baja exitosamente"),
+        () => alert("Ha ocurrido un error dando de baja al artículo")
+      );
       setDeleting(false);
-      console.log(`Deleted article ${articuloCod}`);
     }
   };
 
@@ -78,7 +80,7 @@ export const ArticuloListado = () => {
     {
       field: "modeloInventario",
       headerName: "Modelo",
-      width: 100,
+      width: 130,
       filterable: false,
       renderCell: (params: any) => {
         // TODO: ADD A CIRCLE WITH COLOR BASED ON THE MODEL INVENTORY
@@ -104,7 +106,7 @@ export const ArticuloListado = () => {
     {
       field: "fechaProximoPedido",
       headerName: "Próximo pedido",
-      width: 200,
+      width: 240,
       renderCell: (params: any) => {
         return params.row.modeloInventario == "Intervalo Fijo"
           ? params.row.fechaProximoPedido
@@ -114,7 +116,7 @@ export const ArticuloListado = () => {
     {
       field: "restanteProximoPedido",
       headerName: "Unidades hasta próximo pedido",
-      width: 100,
+      width: 200,
       renderCell: (params: any) => {
         return params.row.modeloInventario == "Lote Fijo"
           ? params.row.restanteProximoPedido
@@ -165,14 +167,24 @@ export const ArticuloListado = () => {
         marginBottom={2}
       >
         <Typography variant="h2">Artículos</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/articulo/create")}
-          startIcon={<Add />}
-        >
-          Crear articulo
-        </Button>
+        <Stack spacing={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/articulo/create")}
+            startIcon={<Add />}
+          >
+            Crear articulo
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => navigate("/articulo/bajados")}
+            startIcon={<Redo />}
+          >
+            Ir a artículos de baja
+          </Button>
+        </Stack>
       </Stack>
       {/* TODO: DATA GRID EACH COLUMNS SHOULD BE FULLY SHOWN IN WIDTH */}
       <DataGrid
