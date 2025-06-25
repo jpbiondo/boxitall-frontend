@@ -46,12 +46,13 @@ export function useArticulo() {
     },
     [del, endpoint]
   );
+  
   const listarArticulosPorProveedor = useCallback(async () => {
-  const response: DTOArticuloGrupoProveedor[] = 
-    await get(`${API_URL}${endpoint}/listarPorProveedor`);
-  return response;
-}, [get, endpoint]);
-
+    const response: DTOArticuloGrupoProveedor[] = 
+      await get(`${API_URL}${endpoint}/listarPorProveedor`);
+    return response;
+  }, [get, endpoint]
+  );
 
   return {
     getArticulosShort,
