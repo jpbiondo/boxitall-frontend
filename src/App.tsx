@@ -20,6 +20,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AddOrden } from "./pages/orden-compra/AddOrden";
 import { AddOrdenDetalle } from "./pages/orden-compra/AddOrdenDetalle";
+import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
+import { ProductosReponer } from "./pages/listas/ProductosReponer";
 
 function App() {
   return (
@@ -119,6 +121,14 @@ function App() {
                     path="update/:proveedorCod"
                     element={<ProveedorAltaModificacion updateMode={true} />}
                   />
+                </Route>
+
+                <Route path="listados">
+                  {/* Los comentados ya están dentro de otra parte */}
+                  {/* <Route path="provsPorArt" element={<ProvsPorArt/>}></Route> */}
+                  {/* <Route path="artsPorProv"></Route> */}
+                  <Route path="faltantes" element={<ProductosFaltantes/>}></Route>
+                  <Route path="reponer" element={<ProductosReponer/>}></Route>
                 </Route>
               </Routes>
             </Box>

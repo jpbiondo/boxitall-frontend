@@ -80,7 +80,7 @@ export const ArticuloListado = () => {
     {
       field: "modeloInventario",
       headerName: "Modelo",
-      width: 100,
+      width: 130,
       filterable: false,
       renderCell: (params: any) => {
         // TODO: ADD A CIRCLE WITH COLOR BASED ON THE MODEL INVENTORY
@@ -106,7 +106,7 @@ export const ArticuloListado = () => {
     {
       field: "fechaProximoPedido",
       headerName: "Próximo pedido",
-      width: 200,
+      width: 240,
       renderCell: (params: any) => {
         return params.row.modeloInventario == "Intervalo Fijo"
           ? params.row.fechaProximoPedido
@@ -116,7 +116,7 @@ export const ArticuloListado = () => {
     {
       field: "restanteProximoPedido",
       headerName: "Unidades hasta próximo pedido",
-      width: 100,
+      width: 200,
       renderCell: (params: any) => {
         return params.row.modeloInventario == "Lote Fijo"
           ? params.row.restanteProximoPedido
