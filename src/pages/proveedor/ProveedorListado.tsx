@@ -1,36 +1,46 @@
 import { useEffect, useState } from "react";
 import { useProveedor } from "../../hooks/useProveedor";
-import { DataGrid } from "@mui/x-data-grid";
-import { Add } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { DataGrid, GridRenderCellParams, GridColDef } from "@mui/x-data-grid";
+import { Add, Delete, Edit } from "@mui/icons-material";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useOrdenCompra } from "../../hooks/useOrdenCompra";
 
 export function ProveedorListado() {
   const { isLoading, error, getProveedorShort } = useProveedor();
+  const {
+    isLoading: isLoadingDelete,
+    error: errorDelete,
+    deleteProveedor,
+  } = useProveedor();
   const [proveedores, setProveedores] = useState<any[]>([]);
   const navigate = useNavigate();
-  /*useEffect(() => {
-    setProveedores([
-      {
-        id: 1,
-        proveedorCod: 1,
-        proveedorNombre: "Proveedor 1",
-        proveedorTelefono: "123456789",
-      },
-      {
-        id: 2,
-        proveedorCod: 2,
-        proveedorNombre: "Proveedor 2",
-        proveedorTelefono: "123456789",
-      },
-      {
-        id: 3,
-        proveedorCod: 3,
-        proveedorNombre: "Proveedor 3",
-        proveedorTelefono: "123456789",
-      },
-    ]);
-  }, []);*/
+  const { error: errorCrearOrdenCompra, crearOrdenCompra } = useOrdenCompra();
+
+  useEffect(() => {
+    crearOrdenCompra({
+      IDProveedor: -2,
+      detallesarticulo: [
+        {
+          IDarticulo: 1,
+          cantidad: 1,
+        },
+      ],
+    });
+    if (errorCrearOrdenCompra) {
+      errorCrearOrdenCompra.response?.json().then((resp) => {
+        console.log(resp.message);
+      });
+    }
+  }, []);
+
+  const handleDelete = (id: number) => {
+    deleteProveedor(id.toString()).then(() => {
+      getProveedorShort().then((proveedores) => {
+        setProveedores(proveedores);
+      });
+    });
+  };
 
   useEffect(() => {
     getProveedorShort().then((proveedores) => {
@@ -44,11 +54,43 @@ export function ProveedorListado() {
     }
   }, [error]);
 
-  const columns = [
+  const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "proveedorCod", headerName: "Código", width: 100 },
     { field: "proveedorNombre", headerName: "Nombre", width: 200 },
     { field: "proveedorTelefono", headerName: "Teléfono", width: 200 },
+    {
+      field: "actions",
+      headerName: "Acciones",
+      width: 100,
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <IconButton
+              onClick={() => navigate(`/proveedor/update/${params.row.id}`)}
+              color="primary"
+              size="small"
+              aria-label="Editar"
+            >
+              <Edit />
+            </IconButton>
+            <IconButton
+              onClick={() => handleDelete(params.row.id)}
+              color="error"
+              size="small"
+              aria-label="Eliminar"
+            >
+              <Delete />
+            </IconButton>
+          </Stack>
+        );
+      },
+    },
   ];
 
   return (
