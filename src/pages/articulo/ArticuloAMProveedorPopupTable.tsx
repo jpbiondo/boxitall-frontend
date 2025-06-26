@@ -53,8 +53,9 @@ export default function ArticuloAMProveedorPopupTable({
     getProveedorShort().then((provs) => {
       provs.map((prov)=>{
         setProveedores((prev)=>[ ...prev, {
-          ...prov,
           id: prov.id,
+          nombre: prov.proveedorTelefono,
+          telefono: prov.proveedorTelefono
         }])
       })
     });
@@ -84,9 +85,9 @@ export default function ArticuloAMProveedorPopupTable({
           </TableRow>
           {proveedores.map((proveedor) => (
             <TableRow key={proveedor.id}>
-              <TableCell>{proveedor.proveedorCod}</TableCell>
-              <TableCell>{proveedor.proveedorNombre}</TableCell>
-              <TableCell>{proveedor.proveedorTelefono}</TableCell>
+              <TableCell>{proveedor.id}</TableCell>
+              <TableCell>{proveedor.nombre}</TableCell>
+              <TableCell>{proveedor.telefono}</TableCell>
               <TableCell>
                 <Button
                   variant="contained"

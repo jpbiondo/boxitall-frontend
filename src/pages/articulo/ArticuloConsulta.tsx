@@ -28,7 +28,7 @@ import { Edit, Delete } from "@mui/icons-material";
 
 export function ArticuloConsulta() {
   const { articuloCod } = useParams();
-  const { isLoading, getArticuloById, deleteArticulo } = useArticulo();
+  const { isLoading, getArticuloById, deleteArticulo, error } = useArticulo();
   const [articulo, setArticulo] = useState<Articulo>(new Object() as Articulo);
   const [modInv, setModInv] = useState<ArticuloModeloInventario>(
     new Object() as ArticuloModeloInventario
@@ -41,12 +41,15 @@ export function ArticuloConsulta() {
   const handleDelete = async () => {
     if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
       await deleteArticulo(articulo.id.toString()).then(
-        () =>{
+        () => {
           alert("Artículo dado de baja exitosamente")
           navigate("/articulo")
-          // TODO - navigate a artículos?
         },
-        () => alert("Ha ocurrido un error dando de baja al artículo")
+        ( ) => {
+          error?.response?.json().then((resp)=>{
+            alert(`Ha ocurrido un error dando de baja al artículo\n ${resp.error}`);
+          });
+        }
       );
     }
   };

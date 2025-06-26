@@ -124,8 +124,10 @@ export default function ArticuloForm({
           alert("Artículo creado exitosamente")
           navigate(`/articulo`)
         },
-        ( msg ) => {
-          alert(`El artículo no pudo ser creado`)
+        ( ) => {
+          error?.response?.json().then((resp)=>{
+            alert(`El artículo no pudo ser creado\n ${resp.error}`);
+          });
         }
       );
       return;
@@ -136,7 +138,11 @@ export default function ArticuloForm({
         alert(`Artículo actualizado exitosamente`)
         navigate(`/articulo`)
       },
-      ( msg ) => { alert(`El artículo no pudo ser actualizado`); console.log(articulo); }
+      ( ) => {
+        error?.response?.json().then((resp)=>{
+          alert(`El artículo no pudo ser actualizado\n ${resp.error}`);
+        });
+      }
     );
   }
 
@@ -370,8 +376,8 @@ export default function ArticuloForm({
                   >
                     <Typography variant="h6" fontWeight={500}>
                       {"Id"} {field.proveedor.id} - {}
-                      {field.proveedor.proveedorNombre} - {}
-                      {field.proveedor.proveedorTelefono}
+                      {field.proveedor.nombre} - {}
+                      {field.proveedor.telefono}
                     </Typography>
                     <FormControlLabel 
                       value={field.proveedor.id}
