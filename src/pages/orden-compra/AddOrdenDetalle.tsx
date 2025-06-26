@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import type { DTOArticuloProveedorListado } from "../../types/domain/articulo/DTOArticuloProveedorListado";
 import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 import type { DTOOrdenCompraAlta } from "../../types/domain/orden-compra/DTOOrdenCompraAlta";
-import { useOrdenCompra } from "../../hooks/useOrdenCompra";
+import { API_URL } from "../../utils/constants";
+
+
 
 export function AddOrdenDetalle() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { crearOrdenCompra } = useOrdenCompra();
+  const [mensaje, setMensaje] = useState<string | null>(null);
+ const [errores, setErrores] = useState<string[]>([]);
+ const [cargando, setCargando] = useState(false);
+
 
   const state = location.state as {
     primerarticulo?: DTOArticuloProveedorListado;
@@ -34,19 +40,19 @@ export function AddOrdenDetalle() {
     const proveedorNombre = state.proveedornombre;
 
     const detalleInicial: DTOOrdenCompraObtenerDetalle = {
-      IDOrdenCompra: 0,
+      idordenCompra: 0,
       estado: "BORRADOR",
       idproveedor: proveedorId,
-      nombreProveedor: proveedorNombre,
+      nombreproveedor: proveedorNombre,
       detalleArticulos: [
         {
-          IDarticulo: primerArticulo.idArticulo,
+          idarticulo: primerArticulo.idArticulo,
           renglon: 0,
           nombreArticulo: primerArticulo.nombreArticulo,
           cantidad: 1,
           precio: primerArticulo.precioProveedor,
           idOCarticulo: 0,
-          loteoptimo: primerArticulo.loteOptimo,
+          loteoptimo: primerArticulo.loteoptimo,
         },
       ],
     };
@@ -90,36 +96,54 @@ export function AddOrdenDetalle() {
     });
   };
 
- const handleGuardarOrden = async () => {
+const handleGuardarOrden = async () => {
   if (!detalleOrden) return;
+
+  setCargando(true);
+  setMensaje(null);
+  setErrores([]);
 
   const dto: DTOOrdenCompraAlta = {
     detallesarticulo: detalleOrden.detalleArticulos.map((art) => ({
-      IDarticulo: art.IDarticulo,
+      IDarticulo: art.idarticulo,
       cantidad: art.cantidad,
     })),
     IDProveedor: detalleOrden.idproveedor,
   };
 
-  const resultado = await crearOrdenCompra(dto);
+  try {
+   const response = await fetch(`${API_URL}/orden-compra/alta-orden-compra`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dto),
+    });
 
-  if (resultado.success && resultado.parcial) {
+    const body = await response.json().catch(() => null);
 
-   console.log("Resultado creación orden:", resultado);
+    if (!response.ok) {
+      setMensaje(body?.mensaje || "Error al crear la orden.");
+      if (Array.isArray(body?.errores)) {
+        setErrores(body.errores);
+      }
+      return;
+    }
 
-    alert(
-      `Orden creada con advertencias:\n\n${resultado.errores?.join("\n")}`
-    );
-    navigate("/orden-compra");
-  } else if (resultado.success) {
-    alert("Orden creada con éxito.");
-    navigate("/orden-compra");
-  } else {
-    alert(
-      `No se pudo crear la orden:\n\n${resultado.errores?.join("\n") ?? resultado.mensaje}`
-    );
+    setMensaje(body?.mensaje || "Orden creada correctamente.");
+    setErrores([]);
+    // Podés hacer navigate si querés ir a otra vista
+    // navigate("/orden-compra");
+  } catch (error: any) {
+    console.error("Error al crear orden:", error);
+    setMensaje("Error inesperado al crear la orden.");
+  } finally {
+    setCargando(false);
   }
 };
+
+
+  
 
 
   if (!detalleOrden) return <p>Cargando nueva orden...</p>;
@@ -129,24 +153,45 @@ export function AddOrdenDetalle() {
     0
   );
 
-  return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Nueva Orden de Compra
-      </Typography>
+return (
+  <div>
+    <Typography variant="h4" gutterBottom>
+      Nueva Orden de Compra
+    </Typography>
 
-      <p>
-        <strong>Proveedor:</strong> {detalleOrden.nombreProveedor}
-      </p>
-      <p>
-        <strong>Estado:</strong> {detalleOrden.estado}
-      </p>
+    <p>
+      <strong>Proveedor:</strong> {detalleOrden.nombreproveedor}
+    </p>
+    <p>
+      <strong>Estado:</strong> {detalleOrden.estado}
+    </p>
+
+    {cargando && <Alert severity="info">Cargando...</Alert>}
+
+    {mensaje && (
+      <Alert severity={errores.length > 0 ? "error" : "success"} sx={{ mb: 2 }}>
+        <AlertTitle>{errores.length > 0 ? "Errores" : "Éxito"}</AlertTitle>
+        {mensaje}
+      </Alert>
+    )}
+
+    {errores.length > 0 && (
+      <Alert severity="error" sx={{ mb: 2 }}>
+        <AlertTitle>Detalles:</AlertTitle>
+        <ul style={{ margin: 0, paddingLeft: "1.2em" }}>
+          {errores.map((err, i) => (
+            <li key={i}>{err}</li>
+          ))}
+        </ul>
+      </Alert>
+    )}
 
       <h3>Artículos</h3>
       <ul>
         {detalleOrden.detalleArticulos.map((articulo) => (
-          <li key={articulo.IDarticulo}>
-            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad(tamaño de lote:{articulo.loteoptimo}): {articulo.cantidad} | Precio: ${articulo.precio}
+          <li key={articulo.idarticulo}>
+            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad (tamaño de lote: {articulo.loteoptimo}): {articulo.cantidad}
+ | Precio: ${articulo.precio}
 
             <span style={{ marginLeft: 15 }}>
               <Button
@@ -191,3 +236,4 @@ export function AddOrdenDetalle() {
     </div>
   );
 }
+    
