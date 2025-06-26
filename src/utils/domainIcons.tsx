@@ -5,6 +5,7 @@ import {
   AnalyticsOutlined,
   InventoryOutlined,
   ProductionQuantityLimitsOutlined,
+  PagesOutlined,
 } from "@mui/icons-material";
 export const ICON_SIZE = 32;
 
@@ -24,3 +25,5 @@ export const getProductCautionIcon = (size?: number) =>
   createIcon(ProductionQuantityLimitsOutlined, size);
 export const getInventoryIcon = (size?: number) =>
   createIcon(InventoryOutlined, size);
+export const getPagesIcon = (size?: number) =>
+  createIcon(PagesOutlined, size);
