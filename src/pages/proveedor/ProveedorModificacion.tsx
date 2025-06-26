@@ -1,12 +1,16 @@
-// TODO: Añadir validaciones
-// TODO: Conectar al backend
-// TODO: Añadir artículos
-import { Button, Stack, TextField, Typography, Paper } from "@mui/material";
+import {
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useProveedor } from "../../hooks/useProveedor";
-import { useParams } from "react-router-dom";
-import { Save } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
+import { Check, Save } from "@mui/icons-material";
 import { ProveedorBase } from "../../types/domain/proveedor/ProveedorBase";
 
 interface IFormInput {
@@ -15,33 +19,40 @@ interface IFormInput {
 }
 
 export function ProveedorModificacion() {
-  const { register, handleSubmit, setValue } = useForm<IFormInput>();
-  const { getProveedorById, error, updateProveedor } = useProveedor();
-
   const { proveedorCod } = useParams();
+  const { register, handleSubmit, setValue } = useForm<IFormInput>();
+
+  const { getProveedorById } = useProveedor();
+  const { updateProveedor, isLoading, error: updateError } = useProveedor();
+
+  const navigate = useNavigate();
+
   const [proveedor, setProveedor] = useState<ProveedorBase | null>(null);
+  const [wasUpdated, setWasUpdated] = useState<boolean>(false);
 
   const onSubmit = (data: IFormInput) => {
     if (!proveedor) return;
-
-    console.log(proveedor.id);
+    setWasUpdated(true);
     updateProveedor(proveedor.id.toString(), {
       id: proveedor.id,
       proveedorCod: proveedor.proveedorCod,
       proveedorNombre: data.nombre,
       proveedorTelefono: data.telefono,
       proveedorFechaBaja: proveedor.proveedorFechaBaja,
-    })
-      .then((resp) => {
-        alert("Proveedor actualizado" + resp.proveedorNombre + " " + resp.id);
-      })
-      .catch((_) => {
-        alert(
-          "No se pudo actualizar el proveedor" +
-            error?.response?.json().then((resp) => resp)
-        );
-      });
+    });
   };
+
+  useEffect(() => {
+    if (!wasUpdated || isLoading || updateError) return;
+
+    setTimeout(
+      () => {
+        navigate("/proveedor");
+      },
+      3000,
+      [navigate]
+    );
+  }, [wasUpdated, updateError, isLoading]);
 
   useEffect(() => {
     if (proveedorCod) {
@@ -93,10 +104,23 @@ export function ProveedorModificacion() {
           variant="contained"
           size="large"
           disabled={!proveedor}
+          loading={isLoading}
           startIcon={<Save />}
         >
           Guardar Proveedor
         </Button>
+        {wasUpdated &&
+          !isLoading &&
+          (!updateError ? (
+            <Alert icon={<Check />} severity="success">
+              El artículo fue actualizado correctamente.
+            </Alert>
+          ) : (
+            <Alert icon={<Check />} severity="error">
+              No se puedo actualizar el artículo.
+              {updateError.response?.json().then((resp) => resp)}
+            </Alert>
+          ))}
       </form>
     </div>
   );
