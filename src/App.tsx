@@ -25,6 +25,7 @@ import { ProductosFaltantes } from "./pages/listas/ProductosFaltantes";
 import { ProductosReponer } from "./pages/listas/ProductosReponer";
 import { OrdenCompraConsultaAddItem } from "./pages/orden-compra/OrdenCompraConsultaAddItem";
 import { ArticuloBajados } from "./pages/articulo/ArticuloBajados";
+import { ArticulosPorProveedor } from "./pages/listas/ArticulosPorProveedor";
 
 function App() {
   return (
@@ -125,9 +126,9 @@ function App() {
                 </Route>
 
                 <Route path="listados">
-                  {/* Los comentados ya están dentro de otra parte */}
+                  {/* Ya está indirectamente dentro del modificar */}
                   {/* <Route path="provsPorArt" element={<ProvsPorArt/>}></Route> */}
-                  {/* <Route path="artsPorProv"></Route> */}
+                  <Route path="artsPorProv" element={ <ArticulosPorProveedor/> }></Route>
                   <Route path="faltantes" element={<ProductosFaltantes/>}></Route>
                   <Route path="reponer" element={<ProductosReponer/>}></Route>
                 </Route>

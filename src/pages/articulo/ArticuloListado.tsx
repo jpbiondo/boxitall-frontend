@@ -25,8 +25,14 @@ export const ArticuloListado = () => {
     if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
       setDeleting(true);
       await deleteArticulo(articuloCod.toString()).then(
-        () => alert("Artículo dado de baja exitosamente"),
-        () => alert("Ha ocurrido un error dando de baja al artículo")
+        () => {
+          alert("Artículo dado de baja exitosamente")
+        },
+        ( ) => {
+          error?.response?.json().then((resp)=>{
+            alert(`Ha ocurrido un error dando de baja al artículo\n ${resp.error}`);
+          });
+        }
       );
       setDeleting(false);
     }

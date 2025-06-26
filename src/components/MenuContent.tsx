@@ -13,7 +13,8 @@ import {
   getProviderIcon,
   getSaleIcon,
   getInventoryIcon,
-  getProductCautionIcon
+  getProductCautionIcon,
+  getPagesIcon
 } from "../utils/domainIcons";
 
 const mainListItems = [
@@ -27,7 +28,8 @@ const mainListItems = [
   },
   { text: "Ventas", icon: getSaleIcon(), path: "/venta" },
   { text: "Artículos a reponer", icon: getInventoryIcon(), path:"/listados/reponer" },
-  { text: "Artículos faltantes", icon: getProductCautionIcon(), path:"/listados/faltantes" }
+  { text: "Artículos faltantes", icon: getProductCautionIcon(), path:"/listados/faltantes" },
+  { text: "Artículos por proveedor", icon: getPagesIcon(), path:"/listados/artsPorProv" }
 ];
 
 const secondaryListItems = [
