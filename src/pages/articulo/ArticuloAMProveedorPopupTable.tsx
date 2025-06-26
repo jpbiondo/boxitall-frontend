@@ -40,7 +40,7 @@ export default function ArticuloAMProveedorPopupTable({
   open,
   setIsOpen,
 }: ArticuloAMProveedorPopupTableProps) {
-  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [proveedores, setProveedores] = useState<any[]>([]);
   const { getProveedorShort } = useProveedor();
 
   useEffect(() => {
@@ -51,13 +51,7 @@ export default function ArticuloAMProveedorPopupTable({
     //     ).length === 0
     // );
     getProveedorShort().then((provs) => {
-      provs.map((prov)=>{
-        setProveedores((prev)=>[ ...prev, {
-          id: prov.id,
-          nombre: prov.proveedorTelefono,
-          telefono: prov.proveedorTelefono
-        }])
-      })
+      setProveedores(provs)
     });
   }, []);
 
@@ -86,8 +80,8 @@ export default function ArticuloAMProveedorPopupTable({
           {proveedores.map((proveedor) => (
             <TableRow key={proveedor.id}>
               <TableCell>{proveedor.id}</TableCell>
-              <TableCell>{proveedor.nombre}</TableCell>
-              <TableCell>{proveedor.telefono}</TableCell>
+              <TableCell>{proveedor.proveedorNombre}</TableCell>
+              <TableCell>{proveedor.proveedorTelefono}</TableCell>
               <TableCell>
                 <Button
                   variant="contained"

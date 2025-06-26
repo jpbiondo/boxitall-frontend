@@ -14,19 +14,13 @@ export function ArticulosPorProveedor(){
     const { isLoading, error, listarArtsPorProv } = useListados();
     const { getProveedorShort } = useProveedor();
     const [articulos, setArticulos] = useState<forList[]>([]);
-    const [ proveedores, setProveedores ]= useState<Proveedor[]>([])
-    const [ selectedProv, setSelectedProv ] = useState<Proveedor>();
+    const [ proveedores, setProveedores ]= useState<any[]>([])
+    const [ selectedProv, setSelectedProv ] = useState<any>();
     const [openProveedoresPopUp, setOpenProveedoresPopUp] = useState<boolean>(false);
   
     useEffect(() => {
       getProveedorShort().then((provs) => {
-        provs.map((prov)=>{
-          setProveedores((prev)=>[ ...prev, {
-            id: prov.id,
-            nombre: prov.proveedorTelefono,
-            telefono: prov.proveedorTelefono
-          }])
-        })
+        setProveedores(provs)
       })
     }, [getProveedorShort]);
 
@@ -80,8 +74,8 @@ export function ArticulosPorProveedor(){
             </TableRow>
             <TableRow>
               <TableCell>{selectedProv?.id}</TableCell>
-              <TableCell>{selectedProv?.nombre}</TableCell>
-              <TableCell>{selectedProv?.telefono}</TableCell>
+              <TableCell>{selectedProv?.proveedorNombre}</TableCell>
+              <TableCell>{selectedProv?.proveedorTelefono}</TableCell>
             </TableRow>
           </TableContainer>
           <Typography variant="h4">Artículos</Typography>
@@ -99,8 +93,8 @@ export function ArticulosPorProveedor(){
                 {proveedores.map((proveedor) => (
                   <TableRow key={proveedor.id}>
                     <TableCell>{proveedor.id}</TableCell>
-                    <TableCell>{proveedor.nombre}</TableCell>
-                    <TableCell>{proveedor.telefono}</TableCell>
+                    <TableCell>{proveedor.proveedorNombre}</TableCell>
+                    <TableCell>{proveedor.proveedorTelefono}</TableCell>
                     <TableCell>
                       <Button
                         variant="contained"

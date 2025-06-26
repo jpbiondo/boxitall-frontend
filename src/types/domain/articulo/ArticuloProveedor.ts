@@ -1,6 +1,5 @@
 export interface ArticuloProveedorDataGrid{
     proveedorId: number,
-    proveedorCod: number,
     proveedorNombre: string,
     proveedorTelefono: string,
     cargoPedido: number,

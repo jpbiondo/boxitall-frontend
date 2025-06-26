@@ -109,9 +109,8 @@ export function ArticuloConsulta() {
       articulo.articuloProveedores.forEach((artProv) => {
         const artProvGrid: ArticuloProveedorDataGrid = {
           proveedorId: artProv.proveedor.id,
-          proveedorCod: artProv.proveedor.proveedorCod,
-          proveedorNombre: artProv.proveedor.proveedorNombre,
-          proveedorTelefono: artProv.proveedor.proveedorTelefono,
+          proveedorNombre: artProv.proveedor.nombre,
+          proveedorTelefono: artProv.proveedor.telefono,
           cargoPedido: artProv.cargoPedido,
           costoCompra: artProv.costoCompra,
           costoPedido: artProv.costoPedido,
@@ -343,7 +342,7 @@ export function ArticuloConsulta() {
               <TableBody>
                 {articulo.articuloProveedores?.map((artProv) => (
                   <TableRow>
-                    <TableCell>{artProv.proveedor.proveedorNombre}</TableCell>
+                    <TableCell>{artProv.proveedor.nombre}</TableCell>
                     <TableCell>{artProv.cargoPedido}</TableCell>
                     <TableCell>{artProv.costoCompra}</TableCell>
                     <TableCell>{artProv.costoPedido}</TableCell>

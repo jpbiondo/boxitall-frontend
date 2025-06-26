@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useHttp } from "./useHttp";
 import type { Proveedor } from "../types/domain/proveedor/Proveedor";
 import { API_URL } from "../utils/constants";
-import type { ProveedorList } from "../types/domain/proveedor/ProveedorList";
 import { ProveedorAltaDTO } from "../types/domain/proveedor/ProveedorAltaDTO";
 import { ProveedorBase } from "../types/domain/proveedor/ProveedorBase";
 
@@ -11,7 +10,7 @@ export function useProveedor() {
   const { get, post, put, del, error, isLoading } = useHttp();
 
   const getProveedorShort = useCallback(async () => {
-    const response: ProveedorList[] = await get(`${endpoint}/listAll`);
+    const response: Proveedor[] = await get(`${endpoint}/listAll`);
     return response;
   }, [get, endpoint]);
 
