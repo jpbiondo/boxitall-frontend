@@ -401,9 +401,9 @@ export default function ArticuloForm({
                       }}}
                     />
                     <TextField
-                      label="Costo Compra"
+                      label="Precio Unitario"
                       type="number"
-                      {...register(`articuloProveedores.${index}.costoCompra`)}
+                      {...register(`articuloProveedores.${index}.precioUnitario`)}
                       slotProps={{ htmlInput: {
                         min: 0,
                       }}}

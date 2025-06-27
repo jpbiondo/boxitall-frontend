@@ -159,11 +159,11 @@ export function ProveedorAlta() {
                     <TableRow key={item.articulo.id}>
                       <TableCell>{item.articulo.id}</TableCell>
                       <TableCell>{item.articulo.nombre}</TableCell>
-                      <TableCell>${item.cargoPedido.toFixed(2)}</TableCell>
-                      <TableCell>${item.costoCompra.toFixed(2)}</TableCell>
-                      <TableCell>${item.costoPedido.toFixed(2)}</TableCell>
+                      <TableCell>${item.cargoPedido?.toFixed(2)}</TableCell>
+                      <TableCell>${item.costoCompra?.toFixed(2)}</TableCell>
+                      <TableCell>${item.costoPedido?.toFixed(2)}</TableCell>
                       <TableCell>{item.demoraEntrega}</TableCell>
-                      <TableCell>${item.precioUnitario.toFixed(2)}</TableCell>
+                      <TableCell>${item.precioUnitario?.toFixed(2)}</TableCell>
                       <TableCell>
                         <IconButton
                           color="error"

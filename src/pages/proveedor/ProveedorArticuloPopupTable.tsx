@@ -113,10 +113,9 @@ export default function ProveedorArticuloPopupTable({
       demoraEntrega: formData.demoraEntrega,
       precioUnitario: formData.precioUnitario,
       proveedor: {
-        proveedorId: 0, // This will be set by parent component
-        proveedorCod: 0,
-        proveedorNombre: "",
-        proveedorTelefono: "",
+        id: 0, // This will be set by parent component
+        nombre: "",
+        telefono: "",
       },
       articulo: articulo,
     };
