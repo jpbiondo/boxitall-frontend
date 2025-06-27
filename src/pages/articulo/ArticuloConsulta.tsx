@@ -8,7 +8,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -22,7 +21,6 @@ import type {
   ArticuloModeloInventario,
   ArticuloModeloLoteFijo,
 } from "../../types/domain/articulo/Articulo";
-import { DataGrid } from "@mui/x-data-grid";
 import type { ArticuloProveedorDataGrid } from "../../types/domain/articulo/ArticuloProveedor";
 import { Edit, Delete } from "@mui/icons-material";
 
@@ -234,12 +232,20 @@ export function ArticuloConsulta() {
                 </TableRow>
 
                 {modInv.nombre == "Lote Fijo" ? (
-                  <TableRow>
-                    <TableCell>
-                      <Typography fontWeight="bold">Lote óptimo</Typography>
-                    </TableCell>
-                    <TableCell>{(modInv as ArticuloModeloLoteFijo).loteOptimo}</TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">Lote óptimo</Typography>
+                      </TableCell>
+                      <TableCell>{(modInv as ArticuloModeloLoteFijo).loteOptimo}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">Punto de pedido</Typography>
+                      </TableCell>
+                      <TableCell>{(modInv as ArticuloModeloLoteFijo).puntoPedido}</TableCell>
+                    </TableRow>
+                  </>
                 ) : (
                   <TableRow>
                     <TableCell>
