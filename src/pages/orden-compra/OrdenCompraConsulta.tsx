@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useOrdenCompra } from "../../hooks/useOrdenCompra";
 import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 import type { DTOOrdenCompraArticuloAlta } from "../../types/domain/orden-compra/DTOOrdenCompraArticuloAlta";
+import { API_URL } from "../../utils/constants";
 
 export function OrdenCompraConsulta() {
   const { ordenCompraCod } = useParams<{ ordenCompraCod: string }>();
@@ -14,7 +15,6 @@ export function OrdenCompraConsulta() {
     obtenerDetalleOrden,
     eliminarDetalleOrden,
     actualizarCantidadDetalle,
-    cancelarOrdenCompra,
     avanzarEstadoOrden,
     agregarArticuloAOrden,
     isLoading,
@@ -68,14 +68,32 @@ useEffect(() => {
 
 
   // Cancelar orden
-  const handleCancelar = async (idOrden: number) => {
-    const confirmacion = window.confirm("¿Está seguro de cancelar esta orden?");
-    if (confirmacion && ordenCompraCod) {
-      await cancelarOrdenCompra(idOrden);
-      const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
-      setDetalleOrden(detalleActualizado);
+ const handleCancelar = async (idOrden: number) => {
+  const confirmacion = window.confirm("¿Está seguro de cancelar esta orden?");
+  if (!confirmacion || !ordenCompraCod) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/orden-compra/${idOrden}/detalle/cancelar-orden`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al cancelar la orden: ${errorText}`);
     }
-  };
+
+    const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+    setDetalleOrden(detalleActualizado);
+  } catch (err) {
+    console.error(err);
+    alert("No se pudo cancelar la orden.");
+  }
+};
+
+
 
   // Avanzar estado de la orden
   const handleAvanzarEstado = async () => {
@@ -131,7 +149,7 @@ useEffect(() => {
 
   if (!detalleActualizado.detalleArticulos || detalleActualizado.detalleArticulos.length === 0) {
     alert("Se eliminó el último artículo. La orden también fue eliminada.");
-    navigate("/orden-compra"); // <-- redirección automática a la lista de órdenes
+    navigate("/orden-compra");
     return;
   }
 
