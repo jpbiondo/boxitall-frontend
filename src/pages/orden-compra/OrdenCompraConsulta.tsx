@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useOrdenCompra } from "../../hooks/useOrdenCompra";
 import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 import type { DTOOrdenCompraArticuloAlta } from "../../types/domain/orden-compra/DTOOrdenCompraArticuloAlta";
+import { API_URL } from "../../utils/constants";
 
 export function OrdenCompraConsulta() {
   const { ordenCompraCod } = useParams<{ ordenCompraCod: string }>();
@@ -14,7 +15,6 @@ export function OrdenCompraConsulta() {
     obtenerDetalleOrden,
     eliminarDetalleOrden,
     actualizarCantidadDetalle,
-    cancelarOrdenCompra,
     avanzarEstadoOrden,
     agregarArticuloAOrden,
     isLoading,
@@ -38,7 +38,7 @@ export function OrdenCompraConsulta() {
     }
   }, [ordenCompraCod, obtenerDetalleOrden]);
 
- useEffect(() => {
+useEffect(() => {
   const agregarArticuloSiVino = async () => {
     if (state?.articuloParaAgregar && ordenCompraCod) {
       try {
@@ -47,15 +47,17 @@ export function OrdenCompraConsulta() {
           state.articuloParaAgregar
         );
 
-        // Recargar detalle si querés mostrar actualizado
         const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
         setDetalleOrden(detalleActualizado);
 
       } catch (error) {
         console.error("Error al agregar artículo:", error);
-        alert("Ocurrió un error al agregar el artículo.");
+        alert("Ocurrió un error al agregar el artículo. El artículo ya tiene una orden activa");
+
+        
+        const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+        setDetalleOrden(detalleActualizado);
       } finally {
-        // Navegar igual al detalle (recargando el estado para limpiar state.articuloParaAgregar)
         navigate(`/orden-compra/${ordenCompraCod}/detalle`, { replace: true });
       }
     }
@@ -64,15 +66,34 @@ export function OrdenCompraConsulta() {
   agregarArticuloSiVino();
 }, [state?.articuloParaAgregar, ordenCompraCod]);
 
+
   // Cancelar orden
-  const handleCancelar = async (idOrden: number) => {
-    const confirmacion = window.confirm("¿Está seguro de cancelar esta orden?");
-    if (confirmacion && ordenCompraCod) {
-      await cancelarOrdenCompra(idOrden);
-      const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
-      setDetalleOrden(detalleActualizado);
+ const handleCancelar = async (idOrden: number) => {
+  const confirmacion = window.confirm("¿Está seguro de cancelar esta orden?");
+  if (!confirmacion || !ordenCompraCod) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/orden-compra/${idOrden}/detalle/cancelar-orden`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al cancelar la orden: ${errorText}`);
     }
-  };
+
+    const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+    setDetalleOrden(detalleActualizado);
+  } catch (err) {
+    console.error(err);
+    alert("No se pudo cancelar la orden.");
+  }
+};
+
+
 
   // Avanzar estado de la orden
   const handleAvanzarEstado = async () => {
@@ -118,28 +139,51 @@ export function OrdenCompraConsulta() {
     });
   };
 
-  const handleEliminar = async (idDetalle: number) => {
-    if (!ordenCompraCod) return;
-    const confirmacion = window.confirm("¿Eliminar este artículo?");
+ const handleEliminar = async (idDetalle: number) => {
+  const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este artículo?");
+  if (!confirmar || !ordenCompraCod) return;
+
+  await eliminarDetalleOrden(Number(ordenCompraCod), idDetalle);
+
+  const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
+
+  if (!detalleActualizado.detalleArticulos || detalleActualizado.detalleArticulos.length === 0) {
+    alert("Se eliminó el último artículo. La orden también fue eliminada.");
+    navigate("/orden-compra");
+    return;
+  }
+
+  setDetalleOrden(detalleActualizado);
+};
+
+
+  const handleModificarCantidad = async (idDetalle: number, cantidadActual: number) => {
+  const nuevaCantidadStr = window.prompt("Nueva cantidad:", cantidadActual.toString());
+
+  // Canceló el prompt
+  if (nuevaCantidadStr === null) return;
+
+  const nuevaCantidad = Number(nuevaCantidadStr);
+
+  // Validaciones
+  if (
+    isNaN(nuevaCantidad) ||    
+    nuevaCantidad <= 0         
+  ) {
+    alert("Por favor, ingrese un número válido mayor a cero.");
+    return;
+  }
+
+  if (ordenCompraCod) {
+    const confirmacion = window.confirm("¿Modificar la cantidad?");
     if (confirmacion) {
-      await eliminarDetalleOrden(Number(ordenCompraCod), idDetalle);
+      await actualizarCantidadDetalle(Number(ordenCompraCod), idDetalle, nuevaCantidad);
       const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
       setDetalleOrden(detalleActualizado);
     }
-  };
+  }
+};
 
-  const handleModificarCantidad = async (idDetalle: number, cantidadActual: number) => {
-    const nuevaCantidadStr = window.prompt("Nueva cantidad:", cantidadActual.toString());
-    if (nuevaCantidadStr && ordenCompraCod) {
-      const confirmacion = window.confirm("¿Modificar la cantidad?");
-      if (confirmacion) {
-        const nuevaCantidad = Number(nuevaCantidadStr);
-        await actualizarCantidadDetalle(Number(ordenCompraCod), idDetalle, nuevaCantidad);
-        const detalleActualizado = await obtenerDetalleOrden(Number(ordenCompraCod));
-        setDetalleOrden(detalleActualizado);
-      }
-    }
-  };
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -152,6 +196,13 @@ export function OrdenCompraConsulta() {
 
   return (
     <div>
+       <Button
+      variant="outlined"
+      onClick={() => navigate("/orden-compra")}
+      style={{ marginBottom: "10px" }}
+    >
+      Volver
+    </Button>
       <Typography variant="h4">
         Orden de Compra #{detalleOrden.idordenCompra}
       </Typography>
@@ -188,12 +239,13 @@ export function OrdenCompraConsulta() {
       </div>
 
       <p><strong>Proveedor:</strong> {detalleOrden.nombreproveedor}</p>
+       <p><strong>Estado actual:</strong> {detalleOrden.estado}</p>
 
       <h2>Artículos</h2>
       <ul>
         {detalleOrden.detalleArticulos?.map((art) => (
           <li key={art.idarticulo}>
-            Renglón: {art.renglon} - {art.nombreArticulo} | Cantidad: {art.cantidad} | Precio: ${art.precio}
+            Renglón: {art.renglon} - {art.nombreArticulo} | Cantidad(tamaño de lote:{art.loteoptimo}):{art.cantidad}| Precio: ${art.precio}
             <div style={{ display: "inline", marginLeft: "10px" }}>
               <Button
                 variant="outlined"
@@ -217,8 +269,6 @@ export function OrdenCompraConsulta() {
           </li>
         ))}
       </ul>
-
-      <p><strong>Estado:</strong> {detalleOrden.estado}</p>
       <p><strong>Total:</strong> ${total?.toFixed(2)}</p>
     </div>
   );

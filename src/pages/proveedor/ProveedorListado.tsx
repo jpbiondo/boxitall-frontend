@@ -2,44 +2,38 @@ import { useEffect, useState } from "react";
 import { useProveedor } from "../../hooks/useProveedor";
 import { DataGrid, GridRenderCellParams, GridColDef } from "@mui/x-data-grid";
 import { Add, Delete, Edit } from "@mui/icons-material";
-import { Button, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useOrdenCompra } from "../../hooks/useOrdenCompra";
+import { useAlert } from "../../hooks/useAlert";
 
 export function ProveedorListado() {
-  const { isLoading, error, getProveedorShort } = useProveedor();
-  const {
-    isLoading: isLoadingDelete,
-    error: errorDelete,
-    deleteProveedor,
-  } = useProveedor();
-  const [proveedores, setProveedores] = useState<any[]>([]);
-  const navigate = useNavigate();
-  const { error: errorCrearOrdenCompra, crearOrdenCompra } = useOrdenCompra();
+  const { isLoading, getProveedorShort, deleteProveedor } = useProveedor();
 
-  useEffect(() => {
-    crearOrdenCompra({
-      IDProveedor: -2,
-      detallesarticulo: [
-        {
-          IDarticulo: 1,
-          cantidad: 1,
-        },
-      ],
-    });
-    if (errorCrearOrdenCompra) {
-      errorCrearOrdenCompra.response?.json().then((resp) => {
-        console.log(resp.message);
-      });
-    }
-  }, []);
+  const { alert, showSuccess, showError, hideAlert } = useAlert();
+  const [proveedores, setProveedores] = useState<any[]>([]);
+
+  const navigate = useNavigate();
 
   const handleDelete = (id: number) => {
-    deleteProveedor(id.toString()).then(() => {
-      getProveedorShort().then((proveedores) => {
-        setProveedores(proveedores);
+    deleteProveedor(id.toString())
+      .then(() => {
+        getProveedorShort().then((proveedores) => {
+          setProveedores(proveedores);
+        });
+        showSuccess("Proveedor eliminado exitosamente", true);
+      })
+      .catch((error) => {
+        error.response.json().then((resp: any) => {
+          showError(resp.error || "Error al eliminar el proveedor");
+        });
       });
-    });
   };
 
   useEffect(() => {
@@ -47,12 +41,6 @@ export function ProveedorListado() {
       setProveedores(proveedores);
     });
   }, [getProveedorShort]);
-
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-    }
-  }, [error]);
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 100 },
@@ -94,7 +82,7 @@ export function ProveedorListado() {
   ];
 
   return (
-    <div>
+    <Box sx={{ position: "relative" }}>
       <Stack
         direction="row"
         spacing={2}
@@ -112,6 +100,22 @@ export function ProveedorListado() {
         </Button>
       </Stack>
       <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
-    </div>
+
+      {alert.show && (
+        <Alert
+          severity={alert.severity}
+          sx={{
+            position: "fixed",
+            bottom: 10,
+            width: { xs: "70%", md: "50%" },
+            margin: "0 auto",
+            zIndex: 1300,
+          }}
+          onClose={hideAlert}
+        >
+          {alert.message}
+        </Alert>
+      )}
+    </Box>
   );
 }
