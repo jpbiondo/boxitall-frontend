@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOrdenCompra } from "../../hooks/useOrdenCompra";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Stack, Typography } from "@mui/material";
+import { Chip, IconButton, Stack, Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import { Add, Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +45,29 @@ export const OrdenCompraListado = () => {
   const columns = [
     { field: "idordenCompra", headerName: "Codigo", width: 120 },
     { field: "fecha", headerName: "Fecha", width: 150 },
-    { field: "estado", headerName: "Estado", width: 150 },
+    {
+      field: "estado",
+      headerName: "Estado",
+      width: 150,
+      renderCell: (params: any) => {
+        console.log(params);
+        return params.row.estado == "PENDIENTE" ? (
+          <Chip
+            label="Pendiente"
+            color="primary"
+            variant="outlined"
+            size="medium"
+          />
+        ) : (
+          <Chip
+            label="Enviado"
+            color="success"
+            variant="outlined"
+            size="medium"
+          />
+        );
+      },
+    },
     { field: "proveedor", headerName: "Proveedor", width: 200 },
     {
       field: "actions",
