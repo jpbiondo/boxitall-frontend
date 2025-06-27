@@ -247,7 +247,7 @@ export function ArticuloConsulta() {
                         Fecha próximo pedido
                       </Typography>
                     </TableCell>
-                    <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toUTCString()}</TableCell>
+                    <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toString()}</TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -342,7 +342,7 @@ export function ArticuloConsulta() {
               <TableBody>
                 {articulo.articuloProveedores?.map((artProv) => (
                   <TableRow>
-                    <TableCell>{artProv.proveedor.nombre}</TableCell>
+                    <TableCell>{(artProv.proveedor as any).proveedorNombre}</TableCell>
                     <TableCell>{artProv.cargoPedido}</TableCell>
                     <TableCell>{artProv.costoCompra}</TableCell>
                     <TableCell>{artProv.costoPedido}</TableCell>
