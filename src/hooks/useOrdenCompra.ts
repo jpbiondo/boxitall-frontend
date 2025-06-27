@@ -24,7 +24,8 @@ export function useOrdenCompra() {
 
   const cancelarOrdenCompra = useCallback(
     async (id: number) => {
-      const response = await put(`${endpoint}/${id}/detalle/cancelar-orden`);
+      console.log(id);
+     const response = await put(`${endpoint}/${id}/detalle/cancelar-orden`, null);
       return response;
     },
     [put]

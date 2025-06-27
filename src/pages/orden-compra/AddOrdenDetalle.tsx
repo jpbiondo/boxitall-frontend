@@ -51,7 +51,7 @@ export function AddOrdenDetalle() {
           cantidad: 1,
           precio: primerArticulo.precioProveedor,
           idOCarticulo: Date.now(),
-          loteoptimo: primerArticulo.loteoptimo,
+          loteoptimo: primerArticulo.loteOptimo,
         },
       ],
     };
@@ -73,7 +73,7 @@ export function AddOrdenDetalle() {
           cantidad: 1,
           precio: state.articuloParaAgregar.precioProveedor,
           idOCarticulo: Date.now(),
-          loteoptimo: state.articuloParaAgregar.loteoptimo,
+          loteoptimo: state.articuloParaAgregar.loteOptimo,
         };
 
         setDetalleOrden({
@@ -219,7 +219,7 @@ export function AddOrdenDetalle() {
       <ul>
         {detalleOrden.detalleArticulos.map((articulo) => (
           <li key={articulo.idOCarticulo}>
-            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad (lote: {articulo.loteoptimo}): {articulo.cantidad} | Precio: ${articulo.precio}
+            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad ( tamaño lote: {articulo.loteoptimo}): {articulo.cantidad} | Precio: ${articulo.precio}
             <span style={{ marginLeft: 15 }}>
               <Button
                 variant="outlined"
