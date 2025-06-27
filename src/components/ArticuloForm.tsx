@@ -376,8 +376,8 @@ export default function ArticuloForm({
                   >
                     <Typography variant="h6" fontWeight={500}>
                       {"Id"} {field.proveedor.id} - {}
-                      {field.proveedor.nombre} - {}
-                      {field.proveedor.telefono}
+                      {(field.proveedor as any).proveedorNombre} - {}
+                      {(field.proveedor as any).proveedorTelefono}
                     </Typography>
                     <FormControlLabel 
                       value={field.proveedor.id}
