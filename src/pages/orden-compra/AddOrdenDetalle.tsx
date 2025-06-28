@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  Alert,
-  AlertTitle,
-} from "@mui/material";
+import { Button, Typography, Alert, AlertTitle } from "@mui/material";
 import type { DTOArticuloProveedorListado } from "../../types/domain/articulo/DTOArticuloProveedorListado";
 import type { DTOOrdenCompraObtenerDetalle } from "../../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 import type { DTOOrdenCompraAlta } from "../../types/domain/orden-compra/DTOOrdenCompraAlta";
 import { API_URL } from "../../utils/constants";
-import { AddArticuloModal } from "../../components/AddArticuloModal"; 
+import { AddArticuloModal } from "../../components/AddArticuloModal";
 
 export function AddOrdenDetalle() {
   const location = useLocation();
@@ -28,10 +23,15 @@ export function AddOrdenDetalle() {
     articuloParaAgregar?: DTOArticuloProveedorListado;
   };
 
-  const [detalleOrden, setDetalleOrden] = useState<DTOOrdenCompraObtenerDetalle | null>(null);
+  const [detalleOrden, setDetalleOrden] =
+    useState<DTOOrdenCompraObtenerDetalle | null>(null);
 
   useEffect(() => {
-    if (!state?.primerarticulo || state.proveedorid === undefined || !state.proveedornombre) {
+    if (
+      !state?.primerarticulo ||
+      state.proveedorid === undefined ||
+      !state.proveedornombre
+    ) {
       navigate("/orden-compra");
       return;
     }
@@ -82,12 +82,21 @@ export function AddOrdenDetalle() {
         });
       }
 
-      navigate(".", { replace: true, state: { ...state, articuloParaAgregar: undefined } });
+      navigate(".", {
+        replace: true,
+        state: { ...state, articuloParaAgregar: undefined },
+      });
     }
   }, [state.articuloParaAgregar, detalleOrden]);
 
-  const handleModificarCantidad = (idOCarticulo: number, cantidadActual: number) => {
-    const nuevaCantidadStr = window.prompt("Ingrese la nueva cantidad:", cantidadActual.toString());
+  const handleModificarCantidad = (
+    idOCarticulo: number,
+    cantidadActual: number
+  ) => {
+    const nuevaCantidadStr = window.prompt(
+      "Ingrese la nueva cantidad:",
+      cantidadActual.toString()
+    );
     if (nuevaCantidadStr === null) return;
     const nuevaCantidad = Number(nuevaCantidadStr);
     if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
@@ -100,7 +109,9 @@ export function AddOrdenDetalle() {
         ? {
             ...prev,
             detalleArticulos: prev.detalleArticulos.map((art) =>
-              art.idOCarticulo === idOCarticulo ? { ...art, cantidad: nuevaCantidad } : art
+              art.idOCarticulo === idOCarticulo
+                ? { ...art, cantidad: nuevaCantidad }
+                : art
             ),
           }
         : prev
@@ -108,14 +119,18 @@ export function AddOrdenDetalle() {
   };
 
   const handleEliminar = (idOCarticulo: number) => {
-    const confirmacion = window.confirm("¿Está seguro de eliminar este artículo?");
+    const confirmacion = window.confirm(
+      "¿Está seguro de eliminar este artículo?"
+    );
     if (!confirmacion) return;
 
     setDetalleOrden((prev) =>
       prev
         ? {
             ...prev,
-            detalleArticulos: prev.detalleArticulos.filter((art) => art.idOCarticulo !== idOCarticulo),
+            detalleArticulos: prev.detalleArticulos.filter(
+              (art) => art.idOCarticulo !== idOCarticulo
+            ),
           }
         : prev
     );
@@ -137,13 +152,16 @@ export function AddOrdenDetalle() {
     };
 
     try {
-      const response = await fetch(`${API_URL}/orden-compra/alta-orden-compra`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dto),
-      });
+      const response = await fetch(
+        `${API_URL}/orden-compra/alta-orden-compra`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dto),
+        }
+      );
 
       const body = await response.json().catch(() => null);
 
@@ -198,7 +216,10 @@ export function AddOrdenDetalle() {
       {cargando && <Alert severity="info">Cargando...</Alert>}
 
       {mensaje && (
-        <Alert severity={errores.length > 0 ? "error" : "success"} sx={{ mt: 2 }}>
+        <Alert
+          severity={errores.length > 0 ? "error" : "success"}
+          sx={{ mt: 2 }}
+        >
           <AlertTitle>{errores.length > 0 ? "Errores" : "Éxito"}</AlertTitle>
           {mensaje}
         </Alert>
@@ -219,12 +240,19 @@ export function AddOrdenDetalle() {
       <ul>
         {detalleOrden.detalleArticulos.map((articulo) => (
           <li key={articulo.idOCarticulo}>
-            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad ( tamaño lote: {articulo.loteoptimo}): {articulo.cantidad} | Precio: ${articulo.precio}
+            Renglón: {articulo.renglon} - {articulo.nombreArticulo} | Cantidad (
+            tamaño lote: {articulo.loteoptimo}): {articulo.cantidad} | Precio: $
+            {articulo.precio}
             <span style={{ marginLeft: 15 }}>
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => handleModificarCantidad(articulo.idOCarticulo, articulo.cantidad)}
+                onClick={() =>
+                  handleModificarCantidad(
+                    articulo.idOCarticulo,
+                    articulo.cantidad
+                  )
+                }
               >
                 Modificar
               </Button>
@@ -281,7 +309,7 @@ export function AddOrdenDetalle() {
             cantidad: 1,
             precio: nuevoArticulo.precioProveedor,
             idOCarticulo: Date.now(),
-            loteoptimo: nuevoArticulo.loteoptimo,
+            loteoptimo: nuevoArticulo.loteOptimo,
           };
 
           setDetalleOrden((prev) =>

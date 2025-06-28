@@ -3,10 +3,8 @@ import { useHttp } from "./useHttp";
 import type { DTOOrdenCompraAlta } from "../types/domain/orden-compra/DTOOrdenCompraAlta";
 import type { DTOOrdenCompraArticuloAlta } from "../types/domain/orden-compra/DTOOrdenCompraArticuloAlta";
 import type { DTOOrdenCompraListadoActivas } from "../types/domain/orden-compra/DTOOrdenCompraListadoActivas";
-import type { DTOOrdenCompraObtenerDetalle } from "../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle"
+import type { DTOOrdenCompraObtenerDetalle } from "../types/domain/orden-compra/DTOOrdenCompraObtenerDetalle";
 import { API_URL } from "../utils/constants";
-
-
 
 export function useOrdenCompra() {
   const endpoint = "/orden-compra";
@@ -14,18 +12,20 @@ export function useOrdenCompra() {
 
   const crearOrdenCompra = useCallback(
     async (ordenCompraDTO: DTOOrdenCompraAlta) => {
-      const response = await post(`${API_URL}${endpoint}/alta-orden-compra`, ordenCompraDTO); // corregido "$" sobrante
+      const response = await post(
+        `${API_URL}${endpoint}/alta-orden-compra`,
+        ordenCompraDTO
+      ); // corregido "$" sobrante
       return response;
     },
     [post]
   );
 
-
-
   const cancelarOrdenCompra = useCallback(
     async (id: number) => {
-      console.log(id);
-     const response = await put(`${endpoint}/${id}/detalle/cancelar-orden`, null);
+      const response = await del(
+        `${API_URL}${endpoint}/${id}/detalle/cancelar-orden`
+      );
       return response;
     },
     [put]
@@ -33,7 +33,9 @@ export function useOrdenCompra() {
 
   const eliminarDetalleOrden = useCallback(
     async (idOrden: number, idDetalle: number) => {
-      const response = await del(`${API_URL}${endpoint}/${idOrden}/detalle/${idDetalle}/eliminar-detalle`);
+      const response = await del(
+        `${API_URL}${endpoint}/${idOrden}/detalle/${idDetalle}/eliminar-detalle`
+      );
       return response;
     },
     [del]
@@ -54,7 +56,9 @@ export function useOrdenCompra() {
 
   const avanzarEstadoOrden = useCallback(
     async (idOrden: number) => {
-      const response: string[] = await post(`${API_URL}${endpoint}/${idOrden}/detalle/avanzar-estado`);
+      const response: string[] = await post(
+        `${API_URL}${endpoint}/${idOrden}/detalle/avanzar-estado`
+      );
       return response;
     },
     [post]
@@ -62,19 +66,20 @@ export function useOrdenCompra() {
 
   const obtenerDetalleOrden = useCallback(
     async (idOrden: number) => {
-      const response: DTOOrdenCompraObtenerDetalle = await get(`${API_URL}${endpoint}/${idOrden}/detalle`);
-      return response;
-    },
-    [get,endpoint]
-  );
-
-  const listarOrdenesActivas = useCallback(
-    async () => {
-      const response: DTOOrdenCompraListadoActivas[] = await get(`${API_URL}${endpoint}/activas`); // corregido: sin API_URL
+      const response: DTOOrdenCompraObtenerDetalle = await get(
+        `${API_URL}${endpoint}/${idOrden}/detalle`
+      );
       return response;
     },
     [get, endpoint]
   );
+
+  const listarOrdenesActivas = useCallback(async () => {
+    const response: DTOOrdenCompraListadoActivas[] = await get(
+      `${API_URL}${endpoint}/activas`
+    ); // corregido: sin API_URL
+    return response;
+  }, [get, endpoint]);
 
   const agregarArticuloAOrden = useCallback(
     async (idOrden: number, nuevoDetalleDTO: DTOOrdenCompraArticuloAlta) => {
