@@ -247,14 +247,24 @@ export function ArticuloConsulta() {
                     </TableRow>
                   </>
                 ) : (
-                  <TableRow>
-                    <TableCell>
-                      <Typography fontWeight="bold">
-                        Fecha próximo pedido
-                      </Typography>
-                    </TableCell>
-                    <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toString()}</TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">
+                          Fecha próximo pedido
+                        </Typography>
+                      </TableCell>
+                      <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toString()}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">
+                          Inventario máximo
+                        </Typography>
+                      </TableCell>
+                      <TableCell>{(modInv as ArticuloModeloIntervaloFijo).inventarioMaximo}</TableCell>
+                    </TableRow>
+                  </>
                 )}
               </TableBody>
             </Table>
@@ -326,6 +336,9 @@ export function ArticuloConsulta() {
               <TableHead>
                 <TableRow>
                   <TableCell>
+                    <Typography fontWeight="bold">Id</Typography>
+                  </TableCell>
+                  <TableCell>
                     <Typography fontWeight="bold">Nombre</Typography>
                   </TableCell>
                   <TableCell>
@@ -348,6 +361,7 @@ export function ArticuloConsulta() {
               <TableBody>
                 {articulo.articuloProveedores?.map((artProv) => (
                   <TableRow>
+                    <TableCell>{artProv.proveedor.id}</TableCell>
                     <TableCell>{(artProv.proveedor as any).proveedorNombre}</TableCell>
                     <TableCell>{artProv.cargoPedido}</TableCell>
                     <TableCell>{artProv.costoCompra}</TableCell>

@@ -103,12 +103,12 @@ export default function ArticuloForm({
       ...data,
       proveedorPredeterminadoId: provPred as number,
       articuloProveedores: data.articuloProveedores.map((artProv) => {
-        const artAlta:ArticuloProveedorAlta = {
+        const artProvAlta:ArticuloProveedorAlta = {
           ...artProv,
           proveedorId: artProv.proveedor.id,
           articuloId: data.id
         }
-        return artAlta
+        return artProvAlta
       }),
       modeloInventario: {
         nombre: data.modeloInventario.nombre,
@@ -122,7 +122,7 @@ export default function ArticuloForm({
       createArticulo(altaArticulo).then(
         () => {
           alert("Artículo creado exitosamente")
-          navigate(`/articulo`)
+          navigate(`/articulo/${data.id}`)
         },
         ( ) => {
           error?.response?.json().then((resp)=>{
@@ -136,9 +136,10 @@ export default function ArticuloForm({
     updateArticulo(String(articulo.id), altaArticulo).then(
       () => {
         alert(`Artículo actualizado exitosamente`)
-        navigate(`/articulo`)
+        navigate(`/articulo/${data.id}`)
       },
-      ( ) => {
+      async () => {
+        if (error == undefined) console.log("perros");
         error?.response?.json().then((resp)=>{
           alert(`El artículo no pudo ser actualizado\n ${resp.error}`);
         });
@@ -347,6 +348,7 @@ export default function ArticuloForm({
               }}
             >
               <Typography variant="h3">Proveedores</Typography>
+              <Button onClick={() => setProvPred(0)}> Deseleccionar proveedor predeterminado</Button>
               <Button onClick={() => handleResetProvPred()}> Resetear proveedor predeterminado</Button>
             </div>
 
