@@ -1,7 +1,3 @@
-// TODO: Añadir lista de proveedores
-// TODO: Añadir lista de modelos de inventario
-// TODO: Conectar con el backend
-// TODO: Añadir validaciones formulario
 import { Controller, set, useFieldArray, useForm } from "react-hook-form";
 import type { Articulo, ArticuloModeloIntervaloFijo, ArticuloProveedor } from "../types/domain/articulo/Articulo";
 import { useArticulo } from "../hooks/useArticulo";
@@ -45,7 +41,6 @@ export default function ArticuloForm({
   const [ initialProvPred, setInitialProvPred] = useState<number>(0)
   const navigate = useNavigate();
 
-  // Recibe el art desde el local storage
   useEffect(()=>{
     updateMode?
     getArticuloById(articuloCod!).then((art) => {
