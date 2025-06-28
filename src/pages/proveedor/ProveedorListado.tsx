@@ -100,22 +100,27 @@ export function ProveedorListado() {
         </Button>
       </Stack>
       <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
-
-      {alert.show && (
-        <Alert
-          severity={alert.severity}
-          sx={{
-            position: "fixed",
-            bottom: 10,
-            width: { xs: "70%", md: "50%" },
-            margin: "0 auto",
-            zIndex: 1300,
-          }}
-          onClose={hideAlert}
-        >
-          {alert.message}
-        </Alert>
-      )}
+      <Box
+        sx={{
+          position: "fixed",
+          left: { sm: 0, md: "240px" },
+          right: 0,
+          bottom: 5,
+        }}
+        className={`transition-all duration-300 ease-in-out ${
+          alert.show ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        {alert.show && (
+          <Alert
+            className="max-w-lg mx-auto"
+            severity={alert.severity}
+            onClose={hideAlert}
+          >
+            {alert.message}
+          </Alert>
+        )}
+      </Box>
     </Box>
   );
 }

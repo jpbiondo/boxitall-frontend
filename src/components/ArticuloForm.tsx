@@ -3,7 +3,11 @@
 // TODO: Conectar con el backend
 // TODO: Añadir validaciones formulario
 import { Controller, set, useFieldArray, useForm } from "react-hook-form";
-import type { Articulo, ArticuloModeloIntervaloFijo, ArticuloProveedor } from "../types/domain/articulo/Articulo";
+import type {
+  Articulo,
+  ArticuloModeloIntervaloFijo,
+  ArticuloProveedor,
+} from "../types/domain/articulo/Articulo";
 import { useArticulo } from "../hooks/useArticulo";
 import {
   Button,
@@ -22,11 +26,13 @@ import { useEffect, useState } from "react";
 import type { Proveedor } from "../types/domain/proveedor/Proveedor";
 import ArticuloAMProveedorPopupTable from "../pages/articulo/ArticuloAMProveedorPopupTable";
 import { Add, Delete, Save } from "@mui/icons-material";
-import type { ArticuloAlta, ArticuloProveedorAlta } from "../types/domain/articulo/ArticuloAlta";
+import type {
+  ArticuloAlta,
+  ArticuloProveedorAlta,
+} from "../types/domain/articulo/ArticuloAlta";
 import { useNavigate, useParams } from "react-router";
 
-interface IFormValues extends Articulo {
-}
+interface IFormValues extends Articulo {}
 
 interface ArticuloFormProps {
   onSuccess?: () => void;
@@ -36,51 +42,52 @@ interface ArticuloFormProps {
 
 export default function ArticuloForm({
   onSuccess,
-  updateMode
+  updateMode,
 }: ArticuloFormProps) {
-  const { createArticulo, updateArticulo, error, isLoading, getArticuloById} = useArticulo();
-  const [ articulo, setArticulo ] = useState<Articulo>();
+  const { createArticulo, updateArticulo, error, isLoading, getArticuloById } =
+    useArticulo();
+  const [articulo, setArticulo] = useState<Articulo>();
   const { articuloCod } = useParams();
-  const [ provPred, setProvPred] = useState<number>(0)
-  const [ initialProvPred, setInitialProvPred] = useState<number>(0)
+  const [provPred, setProvPred] = useState<number>(0);
+  const [initialProvPred, setInitialProvPred] = useState<number>(0);
   const navigate = useNavigate();
 
   // Recibe el art desde el local storage
-  useEffect(()=>{
-    updateMode?
-    getArticuloById(articuloCod!).then((art) => {
-      setArticulo(art);
-      reset(art);
-    })
-    : undefined;
+  useEffect(() => {
+    updateMode
+      ? getArticuloById(articuloCod!).then((art) => {
+          setArticulo(art);
+          reset(art);
+        })
+      : undefined;
   }, []);
 
-  useEffect (() =>{
+  useEffect(() => {
     setInitialProvPred(articulo?.proveedorPredeterminadoId as number);
     setProvPred(articulo?.proveedorPredeterminadoId as number);
-  }, [articulo])
-  
+  }, [articulo]);
 
   // React Hook Form set-up
-  const { register, control, watch, handleSubmit, getValues, setValue, reset } = useForm<IFormValues>({
-    defaultValues: articulo
-      ? {
-          id: articulo.id,
-          nombre: articulo.nombre,
-          descripcion: articulo.descripcion,
-          demanda: articulo.demanda,
-          desviacionEstandar: articulo.desviacionEstandar,
-          nivelServicio: articulo.nivelServicio,
-          stock: articulo.stock,
-          costoAlmacenamiento: articulo.costoAlmacenamiento,
+  const { register, control, watch, handleSubmit, getValues, setValue, reset } =
+    useForm<IFormValues>({
+      defaultValues: articulo
+        ? {
+            id: articulo.id,
+            nombre: articulo.nombre,
+            descripcion: articulo.descripcion,
+            demanda: articulo.demanda,
+            desviacionEstandar: articulo.desviacionEstandar,
+            nivelServicio: articulo.nivelServicio,
+            stock: articulo.stock,
+            costoAlmacenamiento: articulo.costoAlmacenamiento,
 
-          articuloProveedores: articulo.articuloProveedores,
-          proveedorPredeterminadoId: articulo.proveedorPredeterminadoId,
+            articuloProveedores: articulo.articuloProveedores,
+            proveedorPredeterminadoId: articulo.proveedorPredeterminadoId,
 
-          modeloInventario: articulo.modeloInventario,
-        }
-      : undefined,
-  });
+            modeloInventario: articulo.modeloInventario,
+          }
+        : undefined,
+    });
 
   const { fields, append, remove } = useFieldArray({
     name: "articuloProveedores",
@@ -103,56 +110,59 @@ export default function ArticuloForm({
       ...data,
       proveedorPredeterminadoId: provPred as number,
       articuloProveedores: data.articuloProveedores.map((artProv) => {
-        const artAlta:ArticuloProveedorAlta = {
+        const artAlta: ArticuloProveedorAlta = {
           ...artProv,
           proveedorId: artProv.proveedor.id,
-          articuloId: data.id
-        }
-        return artAlta
+          articuloId: data.id,
+        };
+        return artAlta;
       }),
       modeloInventario: {
         nombre: data.modeloInventario.nombre,
-        fechaProxPedido: ((data.modeloInventario) as ArticuloModeloIntervaloFijo).fechaProximoPedido,
-        intervaloPedido: ((data.modeloInventario) as ArticuloModeloIntervaloFijo).intervaloPedido,
-        inventarioMaximo: ((data.modeloInventario) as ArticuloModeloIntervaloFijo).inventarioMaximo,
-      }
-    }
+        fechaProxPedido: (data.modeloInventario as ArticuloModeloIntervaloFijo)
+          .fechaProximoPedido,
+        intervaloPedido: (data.modeloInventario as ArticuloModeloIntervaloFijo)
+          .intervaloPedido,
+        inventarioMaximo: (data.modeloInventario as ArticuloModeloIntervaloFijo)
+          .inventarioMaximo,
+      },
+    };
 
     if (!articulo) {
       createArticulo(altaArticulo).then(
         () => {
-          alert("Artículo creado exitosamente")
-          navigate(`/articulo`)
+          alert("Artículo creado exitosamente");
+          navigate(`/articulo`);
         },
-        ( ) => {
-          error?.response?.json().then((resp)=>{
+        () => {
+          error?.response?.json().then((resp) => {
             alert(`El artículo no pudo ser creado\n ${resp.error}`);
           });
         }
       );
       return;
     }
-    
+
     updateArticulo(String(articulo.id), altaArticulo).then(
       () => {
-        alert(`Artículo actualizado exitosamente`)
-        navigate(`/articulo`)
+        alert(`Artículo actualizado exitosamente`);
+        navigate(`/articulo`);
       },
-      ( ) => {
-        error?.response?.json().then((resp)=>{
+      () => {
+        error?.response?.json().then((resp) => {
           alert(`El artículo no pudo ser actualizado\n ${resp.error}`);
         });
       }
     );
   }
 
-  const handleProvPred = (event:any , provPredId: string) =>{
+  const handleProvPred = (event: any, provPredId: string) => {
     setProvPred(parseInt(provPredId));
-  }
+  };
 
   const handleResetProvPred = () => {
     setProvPred(initialProvPred);
-  }
+  };
 
   //   Handling ArticuloProveedor state
   const [openProveedoresPopUp, setOpenProveedoresPopUp] =
@@ -193,59 +203,69 @@ export default function ArticuloForm({
           <Typography variant="h3">Base</Typography>
           <TextField {...register("nombre")} label="Nombre del artículo" />
 
-      <TextField
-        multiline
-        rows={3}
-        {...register("descripcion")}
-        label="Descripción del artículo"
-        />
+          <TextField
+            multiline
+            rows={3}
+            {...register("descripcion")}
+            label="Descripción del artículo"
+          />
 
-      <TextField
-        {...register("costoAlmacenamiento")}
-        label="Costo almacenamiento artículo"
-        type="number"
-        slotProps={{ htmlInput: {
-          min: 0,
-        }}}
-        />
+          <TextField
+            {...register("costoAlmacenamiento")}
+            label="Costo almacenamiento artículo"
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+              },
+            }}
+          />
 
-      <TextField
-        {...register("demanda")}
-        label="Cantidad demandada del artículo"
-        type="number"
-        slotProps={{ htmlInput: {
-          min: 0,
-        }}}
-        />
+          <TextField
+            {...register("demanda")}
+            label="Cantidad demandada del artículo"
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+              },
+            }}
+          />
 
-      <TextField
-        {...register("desviacionEstandar")}
-        label="Desviación estandar demanda artículo"
-        type="number"
-        slotProps={{ htmlInput: {
-          min: 0,
-        }}}
-        />
+          <TextField
+            {...register("desviacionEstandar")}
+            label="Desviación estandar demanda artículo"
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+              },
+            }}
+          />
 
-      <TextField
-        {...register("nivelServicio")}
-        label="Nivel de servicio del artículo"
-        type="number"
-        slotProps={{ htmlInput: {
-          min: 0,
-          max: 1,
-          step: "any"
-        }}}
-        />
+          <TextField
+            {...register("nivelServicio")}
+            label="Nivel de servicio del artículo"
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+                max: 1,
+                step: "any",
+              },
+            }}
+          />
 
-        <TextField
-          {...register("stock")}
-          label="Stock del artículo"
-          type="number"
-          slotProps={{ htmlInput: {
-            min: 0,
-          }}}
-        />
+          <TextField
+            {...register("stock")}
+            label="Stock del artículo"
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+              },
+            }}
+          />
         </Stack>
         <Stack direction="column" spacing={2} flex="1">
           {/* Articulo Proveedor Fields */}
@@ -253,7 +273,9 @@ export default function ArticuloForm({
             open={openProveedoresPopUp}
             setIsOpen={setOpenProveedoresPopUp}
             onAddArtProveedor={onAddArtProveedor}
-            artProveedores={fields.map(({ id, ...rest }) => rest  as ArticuloProveedor)}
+            artProveedores={fields.map(
+              ({ id, ...rest }) => rest as ArticuloProveedor
+            )}
           />
 
           {/* Articulo Modelo Inventario Fields */}
@@ -315,17 +337,21 @@ export default function ArticuloForm({
                   label="Intervalo pedido"
                   type="number"
                   {...register("modeloInventario.intervaloPedido")}
-                  slotProps={{ htmlInput: {
-                    min: 0,
-                  }}}
+                  slotProps={{
+                    htmlInput: {
+                      min: 0,
+                    },
+                  }}
                 />
                 <TextField
                   label="Inventario máximo"
                   type="number"
                   {...register("modeloInventario.inventarioMaximo")}
-                  slotProps={{ htmlInput: {
-                    min: 0,
-                  }}}
+                  slotProps={{
+                    htmlInput: {
+                      min: 0,
+                    },
+                  }}
                 />
                 {/* <TextField
                   label="Stock de seguridad"
@@ -347,7 +373,10 @@ export default function ArticuloForm({
               }}
             >
               <Typography variant="h3">Proveedores</Typography>
-              <Button onClick={() => handleResetProvPred()}> Resetear proveedor predeterminado</Button>
+              <Button onClick={() => handleResetProvPred()}>
+                {" "}
+                Resetear proveedor predeterminado
+              </Button>
             </div>
 
             {/* Articulo Proveedor Fields */}
@@ -363,70 +392,100 @@ export default function ArticuloForm({
                 onChange={handleProvPred}
                 name="provPredSelection"
               >
-              {fields.map((field, index) => (
-                <div id="field.proveedor.id">
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <Typography variant="h6" fontWeight={500}>
-                      {"Id"} {field.proveedor.id} - {}
-                      {field.proveedor.nombre} - {}
-                      {field.proveedor.telefono}
-                    </Typography>
-                    <FormControlLabel 
-                      value={field.proveedor.id}
-                      control={<Radio checked={field.proveedor.id == provPred} />}
-                      label="Proveedor predeterminado"
-                    />
-                    <IconButton
-                      onClick={() => handleDeleteArtProveedor(index)}
-                      color="error"
+                {fields.map((field, index) => (
+                  <div id="field.proveedor.id">
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: "1rem",
+                      }}
                     >
-                      <Delete />
-                    </IconButton>
+                      <Typography variant="h6" fontWeight={500}>
+                        {"Id"} {field.proveedor.id} - {}
+                        {(field.proveedor as any).proveedorNombre} - {}
+                        {(field.proveedor as any).proveedorTelefono}
+                      </Typography>
+                      <FormControlLabel
+                        value={field.proveedor.id}
+                        control={
+                          <Radio checked={field.proveedor.id == provPred} />
+                        }
+                        label="Proveedor predeterminado"
+                      />
+                      <IconButton
+                        onClick={() => handleDeleteArtProveedor(index)}
+                        color="error"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </div>
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <TextField
+                        label="Cargo Pedido"
+                        type="number"
+                        {...register(
+                          `articuloProveedores.${index}.cargoPedido`
+                        )}
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                          },
+                        }}
+                      />
+                      <TextField
+                        label="Precio Unitario"
+                        type="number"
+                        {...register(
+                          `articuloProveedores.${index}.precioUnitario`
+                        )}
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                          },
+                        }}
+                      />
+                      <TextField
+                        label="Costo Compra"
+                        type="number"
+                        {...register(
+                          `articuloProveedores.${index}.costoCompra`
+                        )}
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                          },
+                        }}
+                      />
+                      <TextField
+                        label="Costo Pedido"
+                        type="number"
+                        {...register(
+                          `articuloProveedores.${index}.costoPedido`
+                        )}
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                          },
+                        }}
+                      />
+                      <TextField
+                        label="Demora entrega (días)"
+                        type="number"
+                        {...register(
+                          `articuloProveedores.${index}.demoraEntrega`
+                        )}
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                          },
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: "1rem" }}>
-                    <TextField
-                      label="Cargo Pedido"
-                      type="number"
-                      {...register(`articuloProveedores.${index}.cargoPedido`)}
-                      slotProps={{ htmlInput: {
-                        min: 0,
-                      }}}
-                    />
-                    <TextField
-                      label="Costo Compra"
-                      type="number"
-                      {...register(`articuloProveedores.${index}.costoCompra`)}
-                      slotProps={{ htmlInput: {
-                        min: 0,
-                      }}}
-                    />
-                    <TextField
-                      label="Costo Pedido"
-                      type="number"
-                      {...register(`articuloProveedores.${index}.costoPedido`)}
-                      slotProps={{ htmlInput: {
-                        min: 0,
-                      }}}
-                    />
-                    <TextField
-                      label="Demora entrega (días)"
-                      type="number"
-                      {...register(`articuloProveedores.${index}.demoraEntrega`)}
-                      slotProps={{ htmlInput: {
-                        min: 0,
-                      }}}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
               </RadioGroup>
               <Button
                 onClick={handleClickAddProveedor}

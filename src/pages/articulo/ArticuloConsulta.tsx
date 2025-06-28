@@ -8,7 +8,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -22,7 +21,6 @@ import type {
   ArticuloModeloInventario,
   ArticuloModeloLoteFijo,
 } from "../../types/domain/articulo/Articulo";
-import { DataGrid } from "@mui/x-data-grid";
 import type { ArticuloProveedorDataGrid } from "../../types/domain/articulo/ArticuloProveedor";
 import { Edit, Delete } from "@mui/icons-material";
 
@@ -39,15 +37,21 @@ export function ArticuloConsulta() {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    if (confirm("Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse")){
+    if (
+      confirm(
+        "Realmente quieres eliminar el artículo?\nEsta acción no puede deshacerse"
+      )
+    ) {
       await deleteArticulo(articulo.id.toString()).then(
         () => {
-          alert("Artículo dado de baja exitosamente")
-          navigate("/articulo")
+          alert("Artículo dado de baja exitosamente");
+          navigate("/articulo");
         },
-        ( ) => {
-          error?.response?.json().then((resp)=>{
-            alert(`Ha ocurrido un error dando de baja al artículo\n ${resp.error}`);
+        () => {
+          error?.response?.json().then((resp) => {
+            alert(
+              `Ha ocurrido un error dando de baja al artículo\n ${resp.error}`
+            );
           });
         }
       );
@@ -57,6 +61,7 @@ export function ArticuloConsulta() {
   useEffect(() => {
     getArticuloById(articuloCod!).then((articulo) => {
       setArticulo(articulo);
+      console.log(articulo);
       articulo?.modeloInventario ? setModInv(articulo.modeloInventario) : {};
       articulo?.articuloProveedores ? setArtProvsInfo() : {};
     });
@@ -107,6 +112,7 @@ export function ArticuloConsulta() {
     var artProvsGrid: ArticuloProveedorDataGrid[] = [];
     if (articulo.articuloProveedores != undefined)
       articulo.articuloProveedores.forEach((artProv) => {
+        console.log(articulo.articuloProveedores);
         const artProvGrid: ArticuloProveedorDataGrid = {
           proveedorId: artProv.proveedor.id,
           proveedorNombre: artProv.proveedor.nombre,
@@ -234,12 +240,26 @@ export function ArticuloConsulta() {
                 </TableRow>
 
                 {modInv.nombre == "Lote Fijo" ? (
-                  <TableRow>
-                    <TableCell>
-                      <Typography fontWeight="bold">Lote óptimo</Typography>
-                    </TableCell>
-                    <TableCell>{(modInv as ArticuloModeloLoteFijo).loteOptimo}</TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">Lote óptimo</Typography>
+                      </TableCell>
+                      <TableCell>
+                        {(modInv as ArticuloModeloLoteFijo).loteOptimo}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>
+                        <Typography fontWeight="bold">
+                          Punto de pedido
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {(modInv as ArticuloModeloLoteFijo).puntoPedido}
+                      </TableCell>
+                    </TableRow>
+                  </>
                 ) : (
                   <TableRow>
                     <TableCell>
@@ -247,7 +267,11 @@ export function ArticuloConsulta() {
                         Fecha próximo pedido
                       </Typography>
                     </TableCell>
-                    <TableCell>{(modInv as ArticuloModeloIntervaloFijo).fechaProximoPedido?.toUTCString()}</TableCell>
+                    <TableCell>
+                      {(
+                        modInv as ArticuloModeloIntervaloFijo
+                      ).fechaProximoPedido?.toString()}
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -265,7 +289,9 @@ export function ArticuloConsulta() {
                     <Typography fontWeight="bold">CGI</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography fontWeight="bold">Costo de almacenamiento</Typography>
+                    <Typography fontWeight="bold">
+                      Costo de almacenamiento
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography fontWeight="bold">Costo de compra</Typography>
@@ -286,9 +312,7 @@ export function ArticuloConsulta() {
             </Table>
           </TableContainer>
 
-          <Typography variant="h3">
-            Proveedor predeterminado
-          </Typography>
+          <Typography variant="h3">Proveedor predeterminado</Typography>
           <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
             <Table>
               <TableHead>
@@ -297,24 +321,30 @@ export function ArticuloConsulta() {
                     <Typography fontWeight="bold">Id del proveedor</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography fontWeight="bold">Nombre del proveedor</Typography>
+                    <Typography fontWeight="bold">
+                      Nombre del proveedor
+                    </Typography>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableCell>
-                  <Typography> { articulo.proveedorPredeterminadoId } </Typography>
+                  <Typography>
+                    {" "}
+                    {articulo.proveedorPredeterminadoId}{" "}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography> { articulo.proveedorPredeterminadoNombre } </Typography>
+                  <Typography>
+                    {" "}
+                    {articulo.proveedorPredeterminadoNombre}{" "}
+                  </Typography>
                 </TableCell>
               </TableBody>
             </Table>
           </TableContainer>
 
-          <Typography variant="h3">
-            Información de los proveedores
-          </Typography>
+          <Typography variant="h3">Información de los proveedores</Typography>
           <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
             <Table>
               <TableHead>
@@ -342,7 +372,9 @@ export function ArticuloConsulta() {
               <TableBody>
                 {articulo.articuloProveedores?.map((artProv) => (
                   <TableRow>
-                    <TableCell>{artProv.proveedor.nombre}</TableCell>
+                    <TableCell>
+                      {(artProv.proveedor as any).proveedorNombre}
+                    </TableCell>
                     <TableCell>{artProv.cargoPedido}</TableCell>
                     <TableCell>{artProv.costoCompra}</TableCell>
                     <TableCell>{artProv.costoPedido}</TableCell>

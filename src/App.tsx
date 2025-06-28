@@ -93,6 +93,8 @@ function App() {
                   <Route path="seleccionar-articulo" element={<AddOrden />} />
                   <Route path="nueva" element={<AddOrdenDetalle />} />
                   <Route path="agregar-articulo" element={<OrdenCompraConsultaAddItem />} />
+                  <Route path="otro-articulo" element={<OrdenCompraConsultaAddItem />} />
+
 
                   <Route
                     path="create"

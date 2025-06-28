@@ -23,7 +23,7 @@ export function OrdenCompraConsulta() {
 
   const [detalleOrden, setDetalleOrden] =
     useState<DTOOrdenCompraObtenerDetalle | null>(null);
-  const [avisos, setAvisos] = useState<string[]>([]);
+  const [_, setAvisos] = useState<string[]>([]);
 
   const state = location.state as {
     articuloParaAgregar?: DTOOrdenCompraArticuloAlta;
@@ -142,6 +142,14 @@ export function OrdenCompraConsulta() {
       Number(ordenCompraCod)
     );
 
+    if (
+      !detalleActualizado.detalleArticulos ||
+      detalleActualizado.detalleArticulos.length === 0
+    ) {
+      alert("Se eliminó el último artículo. La orden también fue eliminada.");
+      navigate("/orden-compra");
+      return;
+    }
     if (
       !detalleActualizado.detalleArticulos ||
       detalleActualizado.detalleArticulos.length === 0
