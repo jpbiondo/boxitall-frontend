@@ -166,7 +166,8 @@ export default function ArticuloForm({
     setOpenProveedoresPopUp(true);
   };
 
-  const handleDeleteArtProveedor = (artProvIndex: number) => {
+  const handleDeleteArtProveedor = async (artProvIndex: number) => {
+    (fields[artProvIndex].proveedor.id  == provPred)?setProvPred(0):{}
     remove(artProvIndex);
   };
 
