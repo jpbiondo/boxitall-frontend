@@ -3,6 +3,8 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
+  Stack,
   TableCell,
   TableContainer,
   TableRow,
@@ -11,6 +13,7 @@ import type { ArticuloProveedor } from "../../types/domain/articulo/Articulo";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { Proveedor } from "../../types/domain/proveedor/Proveedor";
 import { useProveedor } from "../../hooks/useProveedor";
+import { Close } from "@mui/icons-material";
 
 interface ArticuloAMProveedorPopupTableProps {
   onAddArtProveedor: (proveedor: Proveedor) => void;
@@ -18,21 +21,6 @@ interface ArticuloAMProveedorPopupTableProps {
   open: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
-
-function createProveedorRow(
-  proveedorId: number,
-  proveedorCod: number,
-  proveedorNombre: string,
-  proveedorTelefono: string
-) {
-  return { proveedorId, proveedorCod, proveedorNombre, proveedorTelefono };
-}
-
-const proveedoresMock = [
-  createProveedorRow(1, 1, "Proveedor 1", "1234567890"),
-  createProveedorRow(2, 2, "Proveedor 2", "1234567890"),
-  createProveedorRow(3, 3, "Proveedor 3", "1234567890"),
-];
 
 export default function ArticuloAMProveedorPopupTable({
   onAddArtProveedor,
@@ -43,17 +31,24 @@ export default function ArticuloAMProveedorPopupTable({
   const [proveedores, setProveedores] = useState<any[]>([]);
   const { getProveedorShort } = useProveedor();
 
+  const proveedorProveeArticulo = (
+    proveedor: Proveedor,
+    artProveedores: ArticuloProveedor[]
+  ) => {
+    const artProvsDelProveedor = artProveedores.find(
+      (artProv) => artProv.proveedor.id === proveedor.id
+    );
+    return artProvsDelProveedor;
+  };
+
   useEffect(() => {
-    // const provList = proveedoresMock.filter(
-    //   ({ proveedorCod }) =>
-    //     artProveedores.filter(
-    //       (artProv) => artProv.proveedor.proveedorCod === proveedorCod
-    //     ).length === 0
-    // );
     getProveedorShort().then((provs) => {
-      setProveedores(provs)
+      const filteredProvList = provs.filter(
+        (prov) => !proveedorProveeArticulo(prov, artProveedores)
+      );
+      setProveedores(filteredProvList);
     });
-  }, []);
+  }, [artProveedores, getProveedorShort]);
 
   const handleAddArtProveedor = (proveedor: Proveedor) => {
     onAddArtProveedor(proveedor);
@@ -66,9 +61,19 @@ export default function ArticuloAMProveedorPopupTable({
   };
 
   return (
-    <Dialog open={open}>
-      <Button onClick={handleClose}> Cerrar </Button>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Agregar proveedores para el artículo</DialogTitle>
+
+      <IconButton
+        onClick={handleClose}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+        }}
+      >
+        <Close />
+      </IconButton>
       <DialogContent>
         <TableContainer>
           <TableRow>
