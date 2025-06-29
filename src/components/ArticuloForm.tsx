@@ -126,7 +126,7 @@ export default function ArticuloForm({
       createArticulo(altaArticulo).then(
         () => {
           alert("Artículo creado exitosamente");
-          navigate(`/articulo/${data.id}`);
+          navigate(`/articulo`);
         },
         () => {
           error?.response?.json().then((resp) => {
