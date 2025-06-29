@@ -1,8 +1,4 @@
-// TODO: Añadir lista de proveedores
-// TODO: Añadir lista de modelos de inventario
-// TODO: Conectar con el backend
-// TODO: Añadir validaciones formulario
-import { Controller, set, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import type {
   Articulo,
   ArticuloModeloIntervaloFijo,
@@ -17,7 +13,6 @@ import {
   Stack,
   TextField,
   Typography,
-  Step,
   FormControlLabel,
   Radio,
   RadioGroup,
@@ -52,7 +47,6 @@ export default function ArticuloForm({
   const [initialProvPred, setInitialProvPred] = useState<number>(0);
   const navigate = useNavigate();
 
-  // Recibe el art desde el local storage
   useEffect(() => {
     updateMode
       ? getArticuloById(articuloCod!).then((art) => {
@@ -68,7 +62,7 @@ export default function ArticuloForm({
   }, [articulo]);
 
   // React Hook Form set-up
-  const { register, control, watch, handleSubmit, getValues, setValue, reset } =
+  const { register, control, watch, handleSubmit, reset } =
     useForm<IFormValues>({
       defaultValues: articulo
         ? {
@@ -110,12 +104,12 @@ export default function ArticuloForm({
       ...data,
       proveedorPredeterminadoId: provPred as number,
       articuloProveedores: data.articuloProveedores.map((artProv) => {
-        const artAlta: ArticuloProveedorAlta = {
+        const artProvAlta: ArticuloProveedorAlta = {
           ...artProv,
           proveedorId: artProv.proveedor.id,
           articuloId: data.id,
         };
-        return artAlta;
+        return artProvAlta;
       }),
       modeloInventario: {
         nombre: data.modeloInventario.nombre,
@@ -132,7 +126,7 @@ export default function ArticuloForm({
       createArticulo(altaArticulo).then(
         () => {
           alert("Artículo creado exitosamente");
-          navigate(`/articulo`);
+          navigate(`/articulo/${data.id}`);
         },
         () => {
           error?.response?.json().then((resp) => {
@@ -146,7 +140,7 @@ export default function ArticuloForm({
     updateArticulo(String(articulo.id), altaArticulo).then(
       () => {
         alert(`Artículo actualizado exitosamente`);
-        navigate(`/articulo`);
+        navigate(`/articulo/${data.id}`);
       },
       () => {
         error?.response?.json().then((resp) => {
@@ -303,27 +297,6 @@ export default function ArticuloForm({
           <div
             style={{ display: "flex", gap: "1rem", flexDirection: "column" }}
           >
-            {/* Articulo Modelo Inventario LF */}
-            {/* {modeloInventarioTipo === "Lote Fijo" && (
-              <>
-                <TextField
-                  label="Lote óptimo"
-                  type="number"
-                  {...register("modeloInventario.loteOptimo")}
-                />
-                <TextField
-                  label="Punto de pedido"
-                  type="number"
-                  {...register("modeloInventario.puntoPedido")}
-                />
-                <TextField
-                  label="Stock de seguridad"
-                  type="number"
-                  {...register("modeloInventario.stockSeguridad")}
-                />
-              </>
-            )} */}
-
             {/* Articulo Modelo Inventario IF */}
             {modeloInventarioTipo === "Intervalo Fijo" && (
               <>
@@ -353,11 +326,6 @@ export default function ArticuloForm({
                     },
                   }}
                 />
-                {/* <TextField
-                  label="Stock de seguridad"
-                  type="number"
-                  {...register("modeloInventario.stockSeguridad")}
-                /> */}
               </>
             )}
           </div>
@@ -373,6 +341,7 @@ export default function ArticuloForm({
               }}
             >
               <Typography variant="h3">Proveedores</Typography>
+              <Button onClick={() => setProvPred(0)}> Deseleccionar proveedor predeterminado</Button>
               <Button onClick={() => handleResetProvPred()}>
                 {" "}
                 Resetear proveedor predeterminado
