@@ -44,14 +44,13 @@ export function ProveedorListado() {
   }, [getProveedorShort]);
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "proveedorCod", headerName: "Código", width: 100 },
-    { field: "proveedorNombre", headerName: "Nombre", width: 200 },
-    { field: "proveedorTelefono", headerName: "Teléfono", width: 200 },
+    { field: "id", headerName: "ID" },
+    { field: "proveedorCod", headerName: "Código" },
+    { field: "proveedorNombre", headerName: "Nombre" },
+    { field: "proveedorTelefono", headerName: "Teléfono" },
     {
       field: "actions",
       headerName: "Acciones",
-      width: 100,
       renderCell: (params: GridRenderCellParams) => {
         return (
           <Stack
@@ -100,7 +99,9 @@ export function ProveedorListado() {
           Crear proveedor
         </Button>
       </Stack>
-      <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
+      <Box width="600px">
+        <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
+      </Box>
       <AlertContainer isDisplayAlert={alert.show}>
         <Alert
           className="max-w-lg mx-auto"

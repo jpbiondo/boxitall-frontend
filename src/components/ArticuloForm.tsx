@@ -124,7 +124,7 @@ export default function ArticuloForm({
 
     if (!articulo) {
       createArticulo(altaArticulo).then(
-        () => {
+        (resp) => {
           alert("Artículo creado exitosamente");
           navigate(`/articulo`);
         },
@@ -342,7 +342,10 @@ export default function ArticuloForm({
               }}
             >
               <Typography variant="h3">Proveedores</Typography>
-              <Button onClick={() => setProvPred(0)}> Deseleccionar proveedor predeterminado</Button>
+              <Button onClick={() => setProvPred(0)}>
+                {" "}
+                Deseleccionar proveedor predeterminado
+              </Button>
               <Button onClick={() => handleResetProvPred()}>
                 {" "}
                 Resetear proveedor predeterminado
