@@ -81,7 +81,7 @@ export default function AppNavbar() {
                 component="h1"
                 sx={{ color: "text.primary" }}
               >
-                BotItAll
+                BoxItAll
               </Typography>
             </Link>
           </Stack>
