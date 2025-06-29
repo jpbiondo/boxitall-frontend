@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../hooks/useAlert";
+import AlertContainer from "../../components/AlertContainer";
 
 export function ProveedorListado() {
   const { isLoading, getProveedorShort, deleteProveedor } = useProveedor();
@@ -100,27 +101,15 @@ export function ProveedorListado() {
         </Button>
       </Stack>
       <DataGrid rows={proveedores} columns={columns} loading={isLoading} />
-      <Box
-        sx={{
-          position: "fixed",
-          left: { sm: 0, md: "240px" },
-          right: 0,
-          bottom: 5,
-        }}
-        className={`transition-all duration-300 ease-in-out ${
-          alert.show ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        {alert.show && (
-          <Alert
-            className="max-w-lg mx-auto"
-            severity={alert.severity}
-            onClose={hideAlert}
-          >
-            {alert.message}
-          </Alert>
-        )}
-      </Box>
+      <AlertContainer isDisplayAlert={alert.show}>
+        <Alert
+          className="max-w-lg mx-auto"
+          severity={alert.severity}
+          onClose={hideAlert}
+        >
+          {alert.message}
+        </Alert>
+      </AlertContainer>
     </Box>
   );
 }
