@@ -24,6 +24,7 @@ import { useProveedor } from "../../hooks/useProveedor";
 import { Add, Delete, Save } from "@mui/icons-material";
 import ProveedorArticuloPopupTable from "./ProveedorArticuloPopupTable";
 import { ProveedorAltaDTO } from "../../types/domain/proveedor/ProveedorAltaDTO";
+import { useNavigate } from "react-router";
 
 interface IFormInput {
   nombre: string;
@@ -42,6 +43,7 @@ export function ProveedorAlta() {
     ArticuloProveedorWithArticulo[]
   >([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = (data: IFormInput) => {
     // Create the ProveedorAltaDTO with correct property names
@@ -61,11 +63,14 @@ export function ProveedorAlta() {
 
     console.log(JSON.stringify(proveedorData));
     createProveedor(proveedorData)
-      .then((response) => {
-        alert("Proveedor creado: " + response);
+      .then(() => {
+        alert("Proveedor creado exitosamente");
+        navigate(`/proveedor`);
       })
       .catch((error) => {
-        alert("Error al crear el proveedor: " + error);
+        error.response?.json().then((resp: any) => {
+          alert(`El proveedor no pudo ser creado\n${resp.error}`);
+        });
       });
   };
 
