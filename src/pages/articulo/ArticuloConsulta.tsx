@@ -187,22 +187,18 @@ export function ArticuloConsulta() {
                     <TableRow>
                       <TableCell>
                         <Typography fontWeight="bold">
-                          Inventario máximo
+                          Intervalo de pedido
                         </Typography>
                       </TableCell>
-                      <TableCell>{(modInv as ArticuloModeloIntervaloFijo).inventarioMaximo}</TableCell>
+                      <TableCell>{(modInv as ArticuloModeloIntervaloFijo).intervaloPedido}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>
                         <Typography fontWeight="bold">
-                          Fecha próximo pedido
+                          Inventario máximo
                         </Typography>
                       </TableCell>
-                      <TableCell>
-                        {(
-                          modInv as ArticuloModeloIntervaloFijo
-                        ).fechaProximoPedido?.toString()}
-                      </TableCell>
+                      <TableCell>{(modInv as ArticuloModeloIntervaloFijo).inventarioMaximo}</TableCell>
                     </TableRow>
                       </>
                 )}
