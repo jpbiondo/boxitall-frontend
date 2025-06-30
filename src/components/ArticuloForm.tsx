@@ -228,7 +228,7 @@ export default function ArticuloForm({
 
           <TextField
             {...register("demanda")}
-            label="Cantidad demandada del artículo"
+            label="Cantidad demandada del artículo anualmente"
             type="number"
             slotProps={{
               htmlInput: {
