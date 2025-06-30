@@ -2,6 +2,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import type {
   Articulo,
   ArticuloModeloIntervaloFijo,
+  ArticuloModeloLoteFijo,
   ArticuloProveedor,
 } from "../types/domain/articulo/Articulo";
 import { useArticulo } from "../hooks/useArticulo";
@@ -128,26 +129,35 @@ export default function ArticuloForm({
           alert("Artículo creado exitosamente");
           navigate(`/articulo`);
         },
-        () => {
-          error?.response?.json().then((resp) => {
-            alert(`El artículo no pudo ser creado\n ${resp.error}`);
+        (error) => {
+          error.response.json().then((msg:any) =>{
+            console.log(msg)
+            alert(`El artículo no pudo ser dado de alta:\n\n${msg.error}`);
           });
         }
       );
       return;
     }
 
+    if(
+      articulo.modeloInventario.nombre == "Lote Fijo" &&
+      data.stock <= (articulo.modeloInventario as ArticuloModeloLoteFijo).puntoPedido
+    )
+    alert("El monto de stock ingresado está por debajo o en el punto de pedido")
+
     updateArticulo(String(articulo.id), altaArticulo).then(
       () => {
         alert(`Artículo actualizado exitosamente`);
         navigate(`/articulo/${data.id}`);
       },
-      () => {
-        error?.response?.json().then((resp) => {
-          alert(`El artículo no pudo ser actualizado\n ${resp.error}`);
+      (error) => {
+        error.response.json().then((msg:any) =>{
+          console.log(msg)
+          alert(`El artículo no pudo ser actualizado:\n\n${msg.error}`);
         });
       }
     );
+
   }
 
   const handleProvPred = (event: any, provPredId: string) => {
