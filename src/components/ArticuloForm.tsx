@@ -128,9 +128,10 @@ export default function ArticuloForm({
           alert("Artículo creado exitosamente");
           navigate(`/articulo`);
         },
-        () => {
-          error?.response?.json().then((resp) => {
-            alert(`El artículo no pudo ser creado\n ${resp.error}`);
+        (error) => {
+          error.response.json().then((msg:any) =>{
+            console.log(msg)
+            alert(`El artículo no pudo ser dado de alta:\n\n${msg.error}`);
           });
         }
       );
@@ -142,9 +143,10 @@ export default function ArticuloForm({
         alert(`Artículo actualizado exitosamente`);
         navigate(`/articulo/${data.id}`);
       },
-      () => {
-        error?.response?.json().then((resp) => {
-          alert(`El artículo no pudo ser actualizado\n ${resp.error}`);
+      (error) => {
+        error.response.json().then((msg:any) =>{
+          console.log(msg)
+          alert(`El artículo no pudo ser actualizado:\n\n${msg.error}`);
         });
       }
     );

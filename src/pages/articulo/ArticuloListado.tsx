@@ -28,9 +28,10 @@ export const ArticuloListado = () => {
         () => {
           alert("Artículo dado de baja exitosamente")
         },
-        ( ) => {
-          error?.response?.json().then((resp)=>{
-            alert(`Ha ocurrido un error dando de baja al artículo\n ${resp.error}`);
+        (error) => {
+          error.response.json().then((msg:any) =>{
+            console.log(msg)
+            alert(`El artículo no pudo ser dado de baja:\n\n${msg.error}`);
           });
         }
       );

@@ -44,7 +44,7 @@ export default function SideMenu() {
           {/* TODO: SVG should be white or black depending on the theme */}
           <img src={BoxIcon} alt="logo" width={32} height={32} />
           <Typography variant="h4" component="h1">
-            BotItAll
+            BoxItAll
           </Typography>
         </Box>
       </Link>
