@@ -2,6 +2,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import type {
   Articulo,
   ArticuloModeloIntervaloFijo,
+  ArticuloModeloLoteFijo,
   ArticuloProveedor,
 } from "../types/domain/articulo/Articulo";
 import { useArticulo } from "../hooks/useArticulo";
@@ -138,6 +139,12 @@ export default function ArticuloForm({
       return;
     }
 
+    if(
+      articulo.modeloInventario.nombre == "Lote Fijo" &&
+      data.stock <= (articulo.modeloInventario as ArticuloModeloLoteFijo).puntoPedido
+    )
+    alert("El monto de stock ingresado está por debajo o en el punto de pedido")
+
     updateArticulo(String(articulo.id), altaArticulo).then(
       () => {
         alert(`Artículo actualizado exitosamente`);
@@ -150,6 +157,7 @@ export default function ArticuloForm({
         });
       }
     );
+
   }
 
   const handleProvPred = (event: any, provPredId: string) => {
